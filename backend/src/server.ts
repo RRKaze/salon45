@@ -2,7 +2,7 @@ import express, { type Application, type Request, type Response } from "express"
 import dotenv from "dotenv";
 import cors from "cors";
 // import userRoutes from "./routes/userRoutes";
-import userRoutes from "./routes/userRoutes.ts";
+import userRoutes from "./routes/userRoutes.js";
 
 
 
@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 // Example route
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (_req: Request, res: Response) => {
   res.send("Hello from TypeScript backend!");
 });
 
