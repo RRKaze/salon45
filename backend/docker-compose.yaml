@@ -1,0 +1,27 @@
+version: '3'
+services:
+
+  mongo:
+    image: mongo:8
+    ports:
+      - 27017:27017
+    networks:
+      - salon-network
+
+  server:
+    image: salon45:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      MongoConnectionString: mongodb://mongo:27017
+    ports:
+      - 3001:3000
+    networks:
+      - salon-network
+    depends_on:
+      - mongo
+
+networks:
+  salon-network:
+    driver: bridge
