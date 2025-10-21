@@ -1,7 +1,8 @@
-import express, { type Application, type Request, type Response } from "express";
+import express, { type Application } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import userRoutes from "./routes/userRoutes.js";
+import { MongoManager } from "./config/MongoManager.ts";
+import userRoutes from "./routes/userRoutes.ts";
 
 dotenv.config();
 
@@ -12,14 +13,9 @@ const PORT = process.env['PORT'] || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Example route
-app.get("/", (_req: Request, res: Response) => {
-  res.send("Hello from TypeScript backend!");
-});
+// Connect to Mongo
+await MongoManager.connect(process.env["MongoConnectionString"]!, "salon");
 
+// Mount routes
 app.use("/api/users", userRoutes);
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));

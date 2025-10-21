@@ -8,8 +8,8 @@
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "NodeNext",
-    // "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
     "target": "esnext",
     "types": [],
     // For nodejs:
@@ -25,8 +25,8 @@
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-    //"noEmit": true,
-    //"allowImportingTsExtensions": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
 
     // Style Options
      "noImplicitReturns": true,
@@ -44,6 +44,7 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
+    "esModuleInterop": true
   },
   "include": ["src"],
   "exclude": ["node_modules"]

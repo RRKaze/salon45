@@ -1,6 +1,5 @@
 version: '3'
 services:
-
   mongo:
     image: mongo:8
     ports:
@@ -9,14 +8,17 @@ services:
       - salon-network
 
   server:
-    image: salon45:latest
-    build:
+    build: 
       context: .
       dockerfile: Dockerfile
     environment:
       MongoConnectionString: mongodb://mongo:27017
     ports:
       - 3001:3000
+    # volumes:
+    #   - .:/app
+    #   - /app/node_modules
+    command: npm run dev
     networks:
       - salon-network
     depends_on:
