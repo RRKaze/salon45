@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dockerdev": "ts-node-dev --loader ts-node/esm --respawn src/server.ts",
+    "docker-dev": "nodemon --config development/nodemon.json --inspect=0.0.0.0:9229 src/server.ts",
     "dev": "nodemon --watch src --exec ts-node --esm src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js"

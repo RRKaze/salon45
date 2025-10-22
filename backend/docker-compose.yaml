@@ -10,19 +10,28 @@ services:
   server:
     build: 
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
+    command: npm run docker-dev
+    restart: always
     environment:
       MongoConnectionString: mongodb://mongo:27017
     ports:
       - 3001:3000
-    # volumes:
-    #   - .:/app
-    #   - /app/node_modules
-    command: npm run dev
+      - 9229:9229
     networks:
       - salon-network
     depends_on:
       - mongo
+    develop:
+      watch:
+        - action: sync
+          path: ./
+          target: /app
+          initial_sync: true
+          ignore:
+            - node_modules
+        - action: rebuild
+          path: package.json
 
 networks:
   salon-network:

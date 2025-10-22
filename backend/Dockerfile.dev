@@ -8,12 +8,10 @@ COPY package*.json ./
 # Install all dependencies (including dev)
 RUN npm install
 
-# Install ts-node-dev globally just in case
-RUN npm install -g ts-node-dev
-
 COPY . .
 
 EXPOSE 3000
 
-# Use your dev script
-CMD ["npm", "run", "dev"]
+COPY tsconfig.json .
+COPY development/nodemon.json ./development/nodemon.json
+COPY development/tsconfig.dev.json ./development/tsconfig.dev.json
