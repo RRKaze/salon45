@@ -1,0 +1,10 @@
+node_modules
+.dockerignore
+docker-compose.yaml
+Dockerfile
+Dockerfile.dev
+tsconfig.json
+package.json
+package-lock.json
+eslint.config.ts
+development
