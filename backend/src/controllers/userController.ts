@@ -9,7 +9,7 @@ export const getUsers = async (req: Request, res: Response) => {
     const { userName, phoneNumber } = req.query;
 
     const userCollection = MongoManager.getCollection(
-      "user"
+      "user",
     ) as Collection<User>;
     const filter: Record<string, any> = {};
 
@@ -27,12 +27,11 @@ export const getUsers = async (req: Request, res: Response) => {
 };
 
 export const addUser = async (req: Request, res: Response) => {
-    try {
-      const user  = await UserService.addUser(req.body);
-  
-      return res.status(201).json(user);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
-    }
-  };
-  
+  try {
+    const user = await UserService.addUser(req.body);
+
+    return res.status(201).json(user);
+  } catch (error: any) {
+    return res.status(400).json({ error: error.message });
+  }
+};

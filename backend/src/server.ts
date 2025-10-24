@@ -7,7 +7,7 @@ import userRoutes from "./routes/userRoutes.ts";
 dotenv.config();
 
 const app: Application = express();
-const PORT = process.env['PORT'] || 3000;
+const PORT = process.env["PORT"] || 3000;
 
 // Middlewares
 app.use(cors());

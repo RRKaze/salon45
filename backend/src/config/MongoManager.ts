@@ -4,7 +4,10 @@ export class MongoManager {
   private static client: MongoClient;
   private static db: Db;
 
-  static async connect(connectionString: string, dbName: string): Promise<void> {
+  static async connect(
+    connectionString: string,
+    dbName: string,
+  ): Promise<void> {
     if (!this.client) {
       this.client = new MongoClient(connectionString);
       await this.client.connect();
@@ -19,7 +22,6 @@ export class MongoManager {
     }
     return this.db.collection(collectionName);
   }
-  
 
   static async disconnect(): Promise<void> {
     if (this.client) {

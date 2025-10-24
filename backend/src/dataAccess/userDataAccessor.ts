@@ -10,12 +10,14 @@ export class UserDataAccessor {
   // Exclude password from the result using projection
   static async findByUsernameOrPhone(
     username?: string,
-    phone?: string
+    phone?: string,
   ): Promise<Omit<User, "password"> | null> {
     const collection = this.getUserCollection();
     const filter: Record<string, any> = {};
-    if (username) filter["username"] = { $regex: new RegExp(`^${username}$`, "i") };
-    if (phone) filter["phonenumber"] = { $regex: new RegExp(`^${phone}$`, "i") };
+    if (username)
+      filter["username"] = { $regex: new RegExp(`^${username}$`, "i") };
+    if (phone)
+      filter["phonenumber"] = { $regex: new RegExp(`^${phone}$`, "i") };
 
     const user = await collection.findOne(filter, {
       projection: { password: 0 }, // exclude password

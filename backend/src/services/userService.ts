@@ -6,7 +6,9 @@ import { type UserRequestDto, type UserResponseDto } from "../dtos/userDto.ts";
 import { appError } from "../errors/errors.ts";
 
 export class UserService {
-  static async addUser(userRequestDto: UserRequestDto): Promise< UserResponseDto > {
+  static async addUser(
+    userRequestDto: UserRequestDto,
+  ): Promise<UserResponseDto> {
     const { username, password, phone, email } = userRequestDto;
 
     // Validate required fields
@@ -15,7 +17,10 @@ export class UserService {
     }
 
     // Check if user already exists
-    const existingUser = await UserDataAccessor.findByUsernameOrPhone(username, phone);
+    const existingUser = await UserDataAccessor.findByUsernameOrPhone(
+      username,
+      phone,
+    );
     if (existingUser) {
       throw appError.userAlreadyExists;
     }
@@ -35,9 +40,11 @@ export class UserService {
 
     await UserDataAccessor.insertUser(newUser);
 
-    return {userid: newUser.userid,
-        username: newUser.username,
-        phone: newUser.phone,
-        email: newUser.email} as UserResponseDto;
+    return {
+      userid: newUser.userid,
+      username: newUser.username,
+      phone: newUser.phone,
+      email: newUser.email,
+    } as UserResponseDto;
   }
 }
