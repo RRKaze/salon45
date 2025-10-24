@@ -1,0 +1,4 @@
+if git diff --cached --name-only | grep -q '^backend/'; then
+  echo "→ Running hooks for backend/"
+  (cd backend && npx lint-staged)
+fi
