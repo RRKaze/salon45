@@ -1,4 +1,4 @@
-import { MongoClient, Db, Collection } from "mongodb";
+import { MongoClient, Db, Collection, type Document } from "mongodb";
 
 export class MongoManager {
   private readonly connectionString: string;
@@ -11,18 +11,9 @@ export class MongoManager {
     this.dbName = dbName;
   }
 
-  async connect(): Promise<Db> {
-    if (!this.client || !this.db) {
-      this.client = new MongoClient(this.connectionString);
-      await this.client.connect();
-      this.db = this.client.db(this.dbName);
-      console.log(`✅ Connected to MongoDB: ${this.dbName}`);
-    }
-
-    return this.db;
-  }
-
-  async getCollection(collectionName: string): Promise<Collection<any>> {
+  async getCollection<T extends Document>(
+    collectionName: string,
+  ): Promise<Collection<T>> {
     const db = await this.connect();
     return db.collection(collectionName);
   }
@@ -32,5 +23,16 @@ export class MongoManager {
       await this.client.close();
       console.log("🛑 MongoDB connection closed");
     }
+  }
+
+  private async connect(): Promise<Db> {
+    if (!this.client || !this.db) {
+      this.client = new MongoClient(this.connectionString);
+      await this.client.connect();
+      this.db = this.client.db(this.dbName);
+      console.log(`✅ Connected to MongoDB: ${this.dbName}`);
+    }
+
+    return this.db;
   }
 }

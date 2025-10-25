@@ -1,6 +1,15 @@
-export interface UserResponseDto {
-  userid: string;
+import type { User } from "../models/User";
+
+export class UserResponseDto {
+  id: string;
   username: string;
   phone: string;
-  email?: string;
+  email?: string | undefined;
+
+  constructor(user: User) {
+    this.id = user._id;
+    this.username = user.username;
+    this.phone = user.phone;
+    this.email = user.email;
+  }
 }

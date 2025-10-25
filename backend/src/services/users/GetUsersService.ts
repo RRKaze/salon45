@@ -1,5 +1,5 @@
-import { type User } from "../../models/User.ts";
 import { UserDataAccessor } from "../../dataAccess/UserDataAccessor.ts";
+import { UserResponseDto } from "../../dtos/UserResponseDto.ts";
 
 export class GetUsersService {
   private readonly userDataAccessor: UserDataAccessor;
@@ -11,7 +11,7 @@ export class GetUsersService {
   public async findByUsernameOrPhone(
     username?: string,
     phoneNumber?: string,
-  ): Promise<User[]> {
+  ): Promise<UserResponseDto[]> {
     const users = [];
 
     if (!!username) {
@@ -25,21 +25,27 @@ export class GetUsersService {
       users.push(userByPhone);
     }
 
-    return users.filter((u) => !!u);
+    return users.filter((u) => !!u).map((u) => new UserResponseDto(u));
   }
 
-  public async findByUsername(username: string): Promise<User | null> {
+  public async findByUsername(
+    username: string,
+  ): Promise<UserResponseDto | null> {
     try {
-      return await this.userDataAccessor.findByUsername(username);
+      const user = await this.userDataAccessor.findByUsername(username);
+      return !!user ? new UserResponseDto(user) : null;
     } catch (error) {
       console.error("Error fetching user by username: ", error);
       return null;
     }
   }
 
-  public async findByPhone(phoneNumber: string): Promise<User | null> {
+  public async findByPhone(
+    phoneNumber: string,
+  ): Promise<UserResponseDto | null> {
     try {
-      return await this.userDataAccessor.findByPhone(phoneNumber);
+      const user = await this.userDataAccessor.findByPhone(phoneNumber);
+      return !!user ? new UserResponseDto(user) : null;
     } catch (error) {
       console.error("Error fetching user by phone number: ", error);
       return null;
