@@ -1,6 +1,6 @@
-export class appError {
-  static userAlreadyExists = new appError("User01", "User already exists.");
-  static userMissingInfo = new appError(
+export class AppError {
+  static userAlreadyExists = new AppError("User01", "User already exists.");
+  static userMissingInfo = new AppError(
     "User02",
     "User add request required information missing.",
   );

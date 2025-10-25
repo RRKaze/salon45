@@ -4,10 +4,3 @@ export interface UserRequestDto {
   phone: string;
   email?: string;
 }
-
-export interface UserResponseDto {
-  userid: string;
-  username: string;
-  phone: string;
-  email?: string;
-}

@@ -1,29 +1,33 @@
 import { MongoClient, Db, Collection } from "mongodb";
 
 export class MongoManager {
-  private static client: MongoClient;
-  private static db: Db;
+  private readonly connectionString: string;
+  private readonly dbName: string;
+  private client: MongoClient | null = null;
+  private db: Db | null = null;
 
-  static async connect(
-    connectionString: string,
-    dbName: string,
-  ): Promise<void> {
-    if (!this.client) {
-      this.client = new MongoClient(connectionString);
+  constructor(connectionString: string, dbName: string) {
+    this.connectionString = connectionString;
+    this.dbName = dbName;
+  }
+
+  async connect(): Promise<Db> {
+    if (!this.client || !this.db) {
+      this.client = new MongoClient(this.connectionString);
       await this.client.connect();
-      this.db = this.client.db(dbName);
-      console.log(`✅ Connected to MongoDB: ${dbName}`);
+      this.db = this.client.db(this.dbName);
+      console.log(`✅ Connected to MongoDB: ${this.dbName}`);
     }
+
+    return this.db;
   }
 
-  static getCollection(collectionName: string): Collection<any> {
-    if (!this.db) {
-      throw new Error("MongoManager not initialized. Call connect() first.");
-    }
-    return this.db.collection(collectionName);
+  async getCollection(collectionName: string): Promise<Collection<any>> {
+    const db = await this.connect();
+    return db.collection(collectionName);
   }
 
-  static async disconnect(): Promise<void> {
+  async disconnect(): Promise<void> {
     if (this.client) {
       await this.client.close();
       console.log("🛑 MongoDB connection closed");

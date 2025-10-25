@@ -1,8 +1,7 @@
 import express, { type Application } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { MongoManager } from "./config/MongoManager.ts";
-import userRoutes from "./routes/userRoutes.ts";
+import userRoutes from "./routes/UserRoutes.ts";
 
 dotenv.config();
 
@@ -12,9 +11,6 @@ const PORT = process.env["PORT"] || 3000;
 // Middlewares
 app.use(cors());
 app.use(express.json());
-
-// Connect to Mongo
-await MongoManager.connect(process.env["MongoConnectionString"]!, "salon");
 
 // Mount routes
 app.use("/api/users", userRoutes);
