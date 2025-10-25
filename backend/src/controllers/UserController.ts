@@ -1,18 +1,14 @@
 import { type Request, type Response } from "express";
-import { AddUserService } from "../services/users/AddUserService.ts";
-import type { GetUsersService } from "../services/users/GetUsersService.ts";
+import type { IAddUserService } from "../services/users/IAddUserService.ts";
+import type { IGetUsersService } from "../services/users/IGetUsersService.ts";
+import { injectable, inject } from "tsyringe";
 
+@injectable()
 export class UserController {
-  private readonly addUserService: AddUserService;
-  private readonly getUsersService: GetUsersService;
-
   constructor(
-    addUserService: AddUserService,
-    getUsersService: GetUsersService,
-  ) {
-    this.addUserService = addUserService;
-    this.getUsersService = getUsersService;
-  }
+    @inject("IAddUserService") private addUserService: IAddUserService,
+    @inject("IGetUsersService") private getUsersService: IGetUsersService,
+  ) {}
 
   public async getUsers(req: Request, res: Response) {
     try {

@@ -1,12 +1,13 @@
-import { UserDataAccessor } from "../../dataAccess/UserDataAccessor.ts";
+import { inject, injectable } from "tsyringe";
+import type { IUserDataAccessor } from "../../dataAccess/IUserDataAccessor.ts";
 import { UserResponseDto } from "../../dtos/UserResponseDto.ts";
+import type { IGetUsersService } from "./IGetUsersService.ts";
 
-export class GetUsersService {
-  private readonly userDataAccessor: UserDataAccessor;
-
-  constructor(userDataAccessor: UserDataAccessor) {
-    this.userDataAccessor = userDataAccessor;
-  }
+@injectable()
+export class GetUsersService implements IGetUsersService {
+  constructor(
+    @inject("IUserDataAccessor") private userDataAccessor: IUserDataAccessor,
+  ) {}
 
   public async findByUsernameOrPhone(
     username?: string,

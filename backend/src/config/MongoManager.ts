@@ -1,6 +1,9 @@
 import { MongoClient, Db, Collection, type Document } from "mongodb";
+import type { IMongoManager } from "./IMongoManager";
+import { injectable } from "tsyringe";
 
-export class MongoManager {
+@injectable()
+export class MongoManager implements IMongoManager {
   private readonly connectionString: string;
   private readonly dbName: string;
   private client: MongoClient | null = null;

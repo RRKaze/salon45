@@ -1,13 +1,12 @@
-import { Collection, type Filter, type InsertOneResult } from "mongodb";
-import { MongoManager } from "../config/MongoManager.ts";
+import { Collection, type Filter, type InferIdType } from "mongodb";
 import { type User } from "../models/User.ts";
+import type { IMongoManager } from "../config/IMongoManager.ts";
+import type { IUserDataAccessor } from "./IUserDataAccessor.ts";
+import { inject, injectable } from "tsyringe";
 
-export class UserDataAccessor {
-  private readonly mongoManager: MongoManager;
-
-  constructor(mongoManager: MongoManager) {
-    this.mongoManager = mongoManager;
-  }
+@injectable()
+export class UserDataAccessor implements IUserDataAccessor {
+  constructor(@inject("IMongoManager") private mongoManager: IMongoManager) {}
 
   public async userWithUsernameOrPhoneExists(
     username: string,
@@ -56,9 +55,10 @@ export class UserDataAccessor {
     return await collection.findOne(filter);
   }
 
-  public async insertUser(user: User): Promise<InsertOneResult<User>> {
+  public async insertUser(user: User): Promise<InferIdType<User>> {
     const collection = await this.getUserCollection();
-    return await collection.insertOne(user);
+    const result = await collection.insertOne(user);
+    return result.insertedId;
   }
 
   private async getUserCollection(): Promise<Collection<User>> {

@@ -2,6 +2,7 @@ import express, { type Application } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import userRoutes from "./routes/UserRoutes.ts";
+import "reflect-metadata";
 
 dotenv.config();
 

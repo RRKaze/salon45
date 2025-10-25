@@ -24,6 +24,8 @@
     "express": "^5.1.0",
     "mongo": "^0.1.0",
     "mongodb": "6.20",
+    "reflect-metadata": "^0.2.2",
+    "tsyringe": "^4.10.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
