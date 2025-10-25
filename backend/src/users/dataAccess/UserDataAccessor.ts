@@ -1,6 +1,6 @@
 import { Collection, type Filter, type InferIdType } from "mongodb";
 import { type User } from "../models/User.ts";
-import type { IMongoManager } from "../config/IMongoManager.ts";
+import type { IMongoManager } from "../../mongo/IMongoManager.ts";
 import type { IUserDataAccessor } from "./IUserDataAccessor.ts";
 import { inject, injectable } from "tsyringe";
 

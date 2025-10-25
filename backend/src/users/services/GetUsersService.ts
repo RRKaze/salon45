@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
-import type { IUserDataAccessor } from "../../dataAccess/IUserDataAccessor.ts";
-import { UserResponseDto } from "../../dtos/UserResponseDto.ts";
+import type { IUserDataAccessor } from "../dataAccess/IUserDataAccessor.ts";
+import { UserResponseDto } from "../dtos/UserResponseDto.ts";
 import type { IGetUsersService } from "./IGetUsersService.ts";
 
 @injectable()

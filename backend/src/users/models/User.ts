@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { AppError } from "../errors/AppError.ts";
+import { UsersError } from "../errors/UsersError.ts";
 
 export class User {
   _id!: string;
@@ -29,7 +29,7 @@ export class User {
     email?: string,
   ) {
     if (!username || !password || !phone) {
-      throw AppError.userMissingInfo;
+      throw UsersError.userMissingInfo;
     }
 
     // Hash the password

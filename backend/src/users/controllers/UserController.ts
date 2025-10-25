@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express";
-import type { IAddUserService } from "../services/users/IAddUserService.ts";
-import type { IGetUsersService } from "../services/users/IGetUsersService.ts";
+import type { IAddUserService } from "../services/IAddUserService.ts";
+import type { IGetUsersService } from "../services/IGetUsersService.ts";
 import { injectable, inject } from "tsyringe";
 
 @injectable()

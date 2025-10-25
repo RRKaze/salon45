@@ -1,4 +1,4 @@
-import type { UserResponseDto } from "../../dtos/UserResponseDto";
+import type { UserResponseDto } from "../dtos/UserResponseDto";
 
 export interface IGetUsersService {
   findByUsernameOrPhone(

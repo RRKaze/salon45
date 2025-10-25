@@ -1,8 +1,8 @@
-import { User } from "../../models/User.ts";
-import { type UserRequestDto } from "../../dtos/UserRequestDto.ts";
-import { UserResponseDto } from "../../dtos/UserResponseDto.ts";
-import { AppError } from "../../errors/AppError.ts";
-import type { IUserDataAccessor } from "../../dataAccess/IUserDataAccessor.ts";
+import { User } from "../models/User.ts";
+import { type UserRequestDto } from "../dtos/UserRequestDto.ts";
+import { UserResponseDto } from "../dtos/UserResponseDto.ts";
+import { UsersError } from "../errors/UsersError.ts";
+import type { IUserDataAccessor } from "../dataAccess/IUserDataAccessor.ts";
 import type { IAddUserService } from "./IAddUserService.ts";
 import { inject, injectable } from "tsyringe";
 
@@ -22,7 +22,7 @@ export class AddUserService implements IAddUserService {
         phone,
       );
     if (existingUser) {
-      throw AppError.userAlreadyExists;
+      throw UsersError.userAlreadyExists;
     }
 
     // Create new user
