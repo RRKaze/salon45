@@ -15,9 +15,7 @@ export class UserController {
       const { userName, phoneNumber } = req.query;
       const users = await this.getUsersService.findByUsernameOrPhone(
         userName && typeof userName === "string" ? userName : undefined,
-        phoneNumber && typeof phoneNumber === "string"
-          ? phoneNumber
-          : undefined,
+        phoneNumber && typeof phoneNumber === "string" ? phoneNumber : undefined,
       );
       res.json(users);
     } catch (error) {
