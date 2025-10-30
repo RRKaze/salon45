@@ -9,7 +9,7 @@ services:
 
   server:
     build: 
-      context: .
+      context: backend
       dockerfile: Dockerfile.dev
     command: npm run docker-dev
     restart: always
@@ -25,13 +25,39 @@ services:
     develop:
       watch:
         - action: sync
-          path: ./
+          path: backend
           target: /app
           initial_sync: true
           ignore:
             - node_modules
         - action: rebuild
-          path: package.json
+          path: backend/package.json
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile.dev
+    restart: always
+    environment:
+      backendConnectionString: "https://server:3001"
+    ports:
+      - 3000:3000
+      - 9228:9229
+    networks:
+      - salon-network
+    depends_on:
+      - mongo
+      - server
+    develop:
+      watch:
+        - action: sync
+          path: frontend
+          target: /app
+          initial_sync: true
+          ignore:
+            - node_modules
+        - action: rebuild
+          path: frontend/package.json
 
 networks:
   salon-network:
