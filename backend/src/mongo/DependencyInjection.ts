@@ -5,12 +5,9 @@ export class MongoDependencyInjection {
   public register(container: DependencyContainer): void {
     const mongoManager = new MongoManager(
       process.env["MongoConnectionString"]!,
-      "salon",
     );
-
     container.register("IMongoManager", { useValue: mongoManager });
   }
 }
 
-const mongoDependencyInjection = new MongoDependencyInjection();
-export default mongoDependencyInjection;
+export default new MongoDependencyInjection();

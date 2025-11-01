@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { UsersError } from "../errors/UsersError.ts";
 
-export class User {
+export class User implements Express.User {
   _id!: string;
   username: string;
   password: string;
@@ -32,10 +32,12 @@ export class User {
       throw UsersError.userMissingInfo;
     }
 
-    // Hash the password
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
+    const hashedPassword = await this.HashPassword(password);
     return new User(null!, username, hashedPassword, phone, email);
+  }
+
+  public static async HashPassword(password: string): Promise<string> {
+    const saltRounds = 10;
+    return await bcrypt.hash(password, saltRounds);
   }
 }

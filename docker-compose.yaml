@@ -6,6 +6,8 @@ services:
       - 27017:27017
     networks:
       - salon-network
+    volumes:
+      - ~/.mongo-salon:/data/db
 
   server:
     build: 
@@ -14,7 +16,7 @@ services:
     command: npm run docker-dev
     restart: always
     environment:
-      MongoConnectionString: mongodb://mongo:27017
+      MongoConnectionString: mongodb://mongo:27017/salon
     ports:
       - 3001:3000
       - 9229:9229

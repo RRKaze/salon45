@@ -1,27 +1,19 @@
 import { Router } from "express";
 import { type DependencyContainer } from "tsyringe";
 import passport from "passport";
-import { User } from "../users/models/User.ts";
 import { LocalStrategy } from "./services/LocalStrategy.ts";
+import { SessionService } from "./services/SessionService.ts";
 
 export class AuthServices {
   public register(container: DependencyContainer): Router {
     const router = Router();
 
     const localStrategy = container.resolve(LocalStrategy);
+    const sessionService = container.resolve(SessionService);
+
     passport.use(localStrategy);
-
-    passport.serializeUser(function (user, cb) {
-      process.nextTick(function () {
-        cb(null, { id: (user as User)._id, username: (user as User).username });
-      });
-    });
-
-    passport.deserializeUser(function (user, cb) {
-      process.nextTick(function () {
-        return cb(null, user as User);
-      });
-    });
+    passport.serializeUser(sessionService.Serialize);
+    passport.deserializeUser(sessionService.Deserialize);
 
     router.post(
       "/login",

@@ -5,13 +5,11 @@ import { injectable } from "tsyringe";
 @injectable()
 export class MongoManager implements IMongoManager {
   private readonly connectionString: string;
-  private readonly dbName: string;
   private client: MongoClient | null = null;
   private db: Db | null = null;
 
-  constructor(connectionString: string, dbName: string) {
+  constructor(connectionString: string) {
     this.connectionString = connectionString;
-    this.dbName = dbName;
   }
 
   async getCollection<T extends Document>(
@@ -32,8 +30,8 @@ export class MongoManager implements IMongoManager {
     if (!this.client || !this.db) {
       this.client = new MongoClient(this.connectionString);
       await this.client.connect();
-      this.db = this.client.db(this.dbName);
-      console.log(`✅ Connected to MongoDB: ${this.dbName}`);
+      this.db = this.client.db();
+      console.log(`✅ Connected to MongoDB: ${this.db.databaseName}`);
     }
 
     return this.db;
