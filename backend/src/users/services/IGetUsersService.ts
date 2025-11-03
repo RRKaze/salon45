@@ -9,4 +9,6 @@ export interface IGetUsersService {
   findByUsername(username: string): Promise<UserResponseDto | null>;
 
   findByPhone(phoneNumber: string): Promise<UserResponseDto | null>;
+
+  findByUserId(userId: string): Promise<UserResponseDto | null>;
 }

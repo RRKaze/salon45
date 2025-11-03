@@ -21,7 +21,9 @@ export class AddUserService implements IAddUserService {
         username,
         phone,
       );
+    console.log(`trying to find user: ${username} ---------------`);
     if (existingUser) {
+      console.log(`user existing ------------- `);
       throw UsersError.userAlreadyExists;
     }
 

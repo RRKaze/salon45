@@ -12,4 +12,8 @@ export interface IUserDataAccessor {
   findByPhone(phone: string): Promise<User | null>;
 
   insertUser(user: User): Promise<InferIdType<User>>;
+
+  findByUserId(userId: string): Promise<User | null>;
+
+  updateUser(userId: string, newInfo: Partial<User>): Promise<User | null>;
 }

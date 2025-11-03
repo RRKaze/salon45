@@ -18,8 +18,6 @@ export class AuthServices {
     router.post(
       "/login",
       passport.authenticate("local", {
-        successReturnToOrRedirect: "/",
-        failureRedirect: "/login",
         failureMessage: true,
       }),
     );

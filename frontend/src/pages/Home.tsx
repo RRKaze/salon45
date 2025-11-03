@@ -2,17 +2,22 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState("Overview");
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
-
-      <div className="p-8 text-center">
-        {activeTab === "Overview" && <div>Welcome to your dashboard.</div>}
-        {activeTab === "Tasks" && <div>Here are your tasks.</div>}
-        {activeTab === "Settings" && <div>Update your preferences here.</div>}
+    return (
+      <div>
+        <Navbar />
+        <div>
+          <h1>Welcome to Home Page</h1>
+          <p>
+            Scroll down — the navbar will stay pinned to the top.
+          </p>
+          <div>
+            {Array.from({ length: 40 }, (_, i) => (
+              <p key={i}>
+                Sample content line {i + 1}
+              </p>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }

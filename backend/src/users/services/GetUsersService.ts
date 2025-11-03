@@ -52,4 +52,14 @@ export class GetUsersService implements IGetUsersService {
       return null;
     }
   }
+
+  public async findByUserId(userId: string): Promise<UserResponseDto | null> {
+    try {
+      const user = await this.userDataAccessor.findByUserId(userId);
+      return !!user ? new UserResponseDto(user) : null;
+    } catch (error) {
+      console.error("Error fetching user by user id: ", error);
+      return null;
+    }
+  }
 }

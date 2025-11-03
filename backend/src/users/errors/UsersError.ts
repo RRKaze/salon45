@@ -4,6 +4,7 @@ export class UsersError {
     "User02",
     "User add request required information missing.",
   );
+  static userNotFound = new UsersError("User03", "User not found.");
 
   code: string;
   description: string;

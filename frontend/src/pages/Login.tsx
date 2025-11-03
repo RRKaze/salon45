@@ -6,23 +6,28 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Add login validation logic
-    navigate("/home");
+    const res = await fetch(`http://localhost:3001/api/auth/login?username=${username}&password=${password}`, {method:"POST"});
+    if (res.status === 200){
+        navigate("/");
+    }
+    else{
+        console.log("authentication error");
+    }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow p-6">
-        <h2 className="text-2xl font-semibold text-center mb-4">Login</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <div>
+      <div>
+        <h2>Login</h2>
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <input
@@ -30,12 +35,10 @@ export default function LoginPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <button
             type="submit"
-            className="bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700 transition"
           >
             Sign In
           </button>

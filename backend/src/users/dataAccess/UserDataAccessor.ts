@@ -13,7 +13,6 @@ export class UserDataAccessor implements IUserDataAccessor {
     phone?: string,
   ): Promise<boolean> {
     const collection = await this.getUserCollection();
-
     const filter: Filter<User> = {
       $or: [
         {
@@ -30,6 +29,7 @@ export class UserDataAccessor implements IUserDataAccessor {
     };
 
     const count = await collection.countDocuments(filter);
+    console.log(`trying to identify user count: ${count} 0000000000`);
     return count > 0;
   }
 
@@ -55,10 +55,36 @@ export class UserDataAccessor implements IUserDataAccessor {
     return await collection.findOne(filter);
   }
 
+  public async findByUserId(userId: string): Promise<User | null> {
+    const collection = await this.getUserCollection();
+    const filter: Filter<User> = {
+      userId: {
+        $regex: new RegExp(`^${userId}$`, "i"),
+      },
+    };
+
+    return await collection.findOne(filter);
+  }
+
   public async insertUser(user: User): Promise<InferIdType<User>> {
     const collection = await this.getUserCollection();
+    console.log(collection.dbName);
     const result = await collection.insertOne(user);
+    console.log(result);
     return result.insertedId;
+  }
+
+  public async updateUser(
+    userId: string,
+    newInfo: Partial<User>,
+  ): Promise<User | null> {
+    const collection = await this.getUserCollection();
+    const result = await collection.findOneAndUpdate(
+      { userId },
+      { $set: newInfo },
+      { returnDocument: "after" },
+    );
+    return result;
   }
 
   private async getUserCollection(): Promise<Collection<User>> {
