@@ -39,10 +39,8 @@ services:
       context: frontend
       dockerfile: Dockerfile.dev
     restart: always
-    environment:
-      backendConnectionString: "https://server:3001"
     ports:
-      - 3000:3000
+      - 4000:3000
       - 9228:9229
     networks:
       - salon-network
