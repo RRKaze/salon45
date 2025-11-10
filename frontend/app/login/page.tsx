@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+import { redirect } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 
 
@@ -14,6 +14,9 @@ export default function LoginPage({
         
         console.log("submit clicked", JSON.stringify(state));
         console.log("response", JSON.stringify(res));
+        if (res.status === 200) {
+            redirect("/home");
+        }
     }
 
     function handleUsernameChange(i:ChangeEvent<HTMLInputElement>){
