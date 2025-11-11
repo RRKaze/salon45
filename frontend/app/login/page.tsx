@@ -1,6 +1,7 @@
 "use client";
 import { redirect } from "next/navigation";
 import { ChangeEvent, useState } from "react";
+import Navigation from "../components/Navigation";
 
 
 export default function LoginPage({
@@ -28,15 +29,19 @@ export default function LoginPage({
     }
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-          <form className="flex flex-col">
-              <input placeholder="Username" id="username" value={state.username} onChange={handleUsernameChange} className="border border-slate-500 color-white rounded-4xl active:outline-white-0 mb-10 placeholder:pl-3" />
-              <input placeholder="Password" id="password" value={state.password} onChange={handlePasswordChange} className="border border-slate-500 color-white rounded-4xl active:outline-white-0 mb-10 placeholder:pl-3" />
-            <button onClick={(x) => {x.preventDefault(); authentication();}}>
-            Submit
+      <div className="min-h-screen flex flex-col bg-brand-bg">
+        <Navigation />
+
+        {/* Login Form */}
+        <main className="flex-1 flex items-center justify-center">
+          <form className="flex flex-col w-full max-w-xs">
+            <input placeholder="Username" id="username" value={state.username} onChange={handleUsernameChange} className="border border-slate-500 py-2 rounded-full color-white active:outline-white-0 mb-10 placeholder:pl-3 text-sm text-gray-700 hover:text-brand" />
+            <input placeholder="Password" id="password" value={state.password} onChange={handlePasswordChange} className="border border-slate-500 py-2 rounded-full color-white active:outline-white-0 mb-10 placeholder:pl-3 text-sm text-gray-700 hover:text-brand" />
+            <button onClick={(x) => {x.preventDefault(); authentication();}} className="text-sm px-4 py-2 rounded-full bg-brand text-white hover:bg-brand-dark transition">
+              Submit
             </button>
           </form>
-          
+        </main>
       </div>
     );
   }

@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import Navigation from "../components/Navigation";
 
 export default function HomePage() {
   const pricing = [
@@ -54,48 +55,14 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-brand-bg">
-      {/* Top Navigation */}
-      <header className="w-full border-b bg-brand-bg/80 backdrop-blur supports-[backdrop-filter]:bg-brand-bg/60 sticky top-0 z-50">
-        <nav className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-full bg-brand flex items-center justify-center text-white font-bold">
-              N45
-            </div>
-            <span className="text-lg font-semibold text-brand">Nail 45</span>
-          </Link>
-
-          {/* Center nav buttons */}
-          <div className="hidden md:flex items-center gap-6">
-            <a href="#pricing" className="text-sm text-gray-700 hover:text-brand">Pricing</a>
-            <a href="#schedule" className="text-sm text-gray-700 hover:text-brand">Schedule</a>
-            <a href="#contact" className="text-sm text-gray-700 hover:text-brand">Contact</a>
-          </div>
-
-          {/* Auth buttons */}
-          <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="text-sm text-gray-700 hover:text-brand"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/signup"
-              className="text-sm px-4 py-2 rounded-full bg-brand text-white hover:bg-brand-dark transition"
-            >
-              Sign up
-            </Link>
-          </div>
-        </nav>
-      </header>
+      <Navigation />
 
       {/* Hero Section */}
       <main className="flex-1">
         <section className="relative isolate overflow-hidden">
           <div className="absolute inset-0 -z-10">
             <Image
-              src="https://www.hukins-hops.co.uk/wp-content/uploads/2024/03/Best-pubs-in-Deal.jpg"
+              src="/home_hero.jpeg"
               alt="Nail salon hero"
               fill
               priority
