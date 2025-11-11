@@ -13,7 +13,8 @@ export class AddUserService implements IAddUserService {
   ) {}
 
   async addUser(userRequestDto: UserRequestDto): Promise<UserResponseDto> {
-    const { username, password, phone, email } = userRequestDto;
+    const { username, password, phone, email, firstName, lastName } =
+      userRequestDto;
 
     // Check if user already exists
     const existingUser =
@@ -28,10 +29,17 @@ export class AddUserService implements IAddUserService {
     }
 
     // Create new user
-    const newUser = await User.NewUser(username, password, phone, email);
-
+    const newUser = await User.NewUser(
+      username,
+      password,
+      phone,
+      firstName,
+      lastName,
+      email,
+    );
+    console.log(`new user created ------------- `);
     newUser._id = await this.userDataAccessor.insertUser(newUser);
-
+    console.log(`new user created with id: ${newUser._id}------------- `);
     return new UserResponseDto(newUser);
   }
 }

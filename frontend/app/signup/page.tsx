@@ -1,43 +1,60 @@
 "use client";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 import Navigation from "../components/Navigation";
+import InputField from "../components/InputField";
+import SubmitButton from "../components/SubmitButton";
 
 export default function SignupPage() {
+  const router = useRouter();
   const [state, setState] = useState({
     firstName: "",
     lastName: "",
+    userName:"",
     phoneNumber: "",
     email: "",
     password: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
 
   async function handleSignup() {
-    // TODO: Implement signup API call
-    console.log("signup clicked", JSON.stringify(state));
-    // For now, just redirect to home after signup
-    // redirect("/home");
+    // Map frontend state to backend DTO format
+    const userRequestDto = {
+      username: state.userName,
+      password: state.password,
+      phone: state.phoneNumber,
+      email: state.email || undefined,
+      firstName: state.firstName,
+      lastName: state.lastName,
+    };
+
+    try {
+      const res = await fetch("http://localhost:3001/api/users/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userRequestDto),
+      });
+      console.log("response", JSON.stringify(res));
+      if (res.status === 201) {
+        router.push("/home");
+      } else {
+        const error = await res.json();
+        console.error("Signup failed:", error);
+        setErrorMessage(error.error || "Signup failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      setErrorMessage("An error occurred. Please try again later.");
+    }
   }
 
-  function handleFirstNameChange(e: ChangeEvent<HTMLInputElement>) {
-    setState({ ...state, firstName: e.target.value });
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setState({ ...state, [e.target.id]: e.target.value });
+    setErrorMessage("");
+  };
 
-  function handleLastNameChange(e: ChangeEvent<HTMLInputElement>) {
-    setState({ ...state, lastName: e.target.value });
-  }
-
-  function handlePhoneNumberChange(e: ChangeEvent<HTMLInputElement>) {
-    setState({ ...state, phoneNumber: e.target.value });
-  }
-
-  function handleEmailChange(e: ChangeEvent<HTMLInputElement>) {
-    setState({ ...state, email: e.target.value });
-  }
-
-  function handlePasswordChange(e: ChangeEvent<HTMLInputElement>) {
-    setState({ ...state, password: e.target.value });
-  }
 
   return (
     <div className="min-h-screen flex flex-col bg-brand-bg">
@@ -46,57 +63,60 @@ export default function SignupPage() {
       {/* Signup Form */}
       <main className="flex-1 flex items-center justify-center">
         <form className="flex flex-col w-full max-w-xs">
-          <input
+          <InputField
             placeholder="First Name"
             id="firstName"
             value={state.firstName}
-            onChange={handleFirstNameChange}
+            onChange={handleChange}
             required
-            className="border border-slate-500 py-2 rounded-full color-white active:outline-white-0 mb-4 placeholder:pl-3 text-sm text-gray-700 hover:text-brand"
           />
-          <input
+          <InputField
             placeholder="Last Name"
             id="lastName"
             value={state.lastName}
-            onChange={handleLastNameChange}
+            onChange={handleChange}
             required
-            className="border border-slate-500 py-2 rounded-full color-white active:outline-white-0 mb-4 placeholder:pl-3 text-sm text-gray-700 hover:text-brand"
           />
-          <input
+          <InputField
+            placeholder="Username"
+            id="userName"
+            value={state.userName}
+            onChange={handleChange}
+            required
+          />
+          <InputField
             placeholder="Phone Number"
             id="phoneNumber"
             type="tel"
             value={state.phoneNumber}
-            onChange={handlePhoneNumberChange}
+            onChange={handleChange}
             required
-            className="border border-slate-500 py-2 rounded-full color-white active:outline-white-0 mb-4 placeholder:pl-3 text-sm text-gray-700 hover:text-brand"
           />
-          <input
+          <InputField
             placeholder="Email Address (optional)"
             id="email"
             type="email"
             value={state.email}
-            onChange={handleEmailChange}
-            className="border border-slate-500 py-2 rounded-full color-white active:outline-white-0 mb-4 placeholder:pl-3 text-sm text-gray-700 hover:text-brand"
+            onChange={handleChange}
           />
-          <input
+          <InputField
             placeholder="Password"
             id="password"
             type="password"
             value={state.password}
-            onChange={handlePasswordChange}
+            onChange={handleChange}
             required
-            className="border border-slate-500 py-2 rounded-full color-white active:outline-white-0 mb-10 placeholder:pl-3 text-sm text-gray-700 hover:text-brand"
+            marginBottom={errorMessage ? "mb-2" : "mb-10"}
           />
-          <button
+          {errorMessage && (
+            <p className="text-red-600 text-sm mb-10 pl-3">{errorMessage}</p>
+          )}
+          <SubmitButton
             onClick={(e) => {
               e.preventDefault();
               handleSignup();
             }}
-            className="text-sm px-4 py-2 rounded-full bg-brand text-white hover:bg-brand-dark transition"
-          >
-            Submit
-          </button>
+          />
         </form>
       </main>
     </div>
