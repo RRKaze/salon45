@@ -4,6 +4,7 @@ import { ChangeEvent, useState } from "react";
 import Navigation from "../components/Navigation";
 import InputField from "../components/InputField";
 import SubmitButton from "../components/SubmitButton";
+import Background from "../components/Background";
 
 
 export default function LoginPage({
@@ -38,7 +39,7 @@ export default function LoginPage({
     }
 
     return (
-      <div className="min-h-screen flex flex-col bg-brand-bg">
+      <Background>
         <Navigation />
 
         {/* Login Form */}
@@ -63,7 +64,7 @@ export default function LoginPage({
             <SubmitButton onClick={(x) => {x.preventDefault(); authentication();}} />
           </form>
         </main>
-      </div>
+      </Background>
     );
   }
 

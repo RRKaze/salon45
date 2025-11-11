@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import Navigation from "../components/Navigation";
+import Background from "../components/Background";
 
 export default function HomePage() {
   const pricing = [
@@ -54,7 +55,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-brand-bg">
+    <Background>
       <Navigation />
 
       {/* Hero Section */}
@@ -178,7 +179,7 @@ export default function HomePage() {
           © {new Date().getFullYear()} Nail 45. All rights reserved.
         </div>
       </footer>
-    </div>
+    </Background>
   );
 }
   

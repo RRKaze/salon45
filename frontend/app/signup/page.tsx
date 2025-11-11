@@ -4,6 +4,7 @@ import { ChangeEvent, useState } from "react";
 import Navigation from "../components/Navigation";
 import InputField from "../components/InputField";
 import SubmitButton from "../components/SubmitButton";
+import Background from "../components/Background";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -57,7 +58,7 @@ export default function SignupPage() {
 
 
   return (
-    <div className="min-h-screen flex flex-col bg-brand-bg">
+    <Background>
       <Navigation />
 
       {/* Signup Form */}
@@ -119,7 +120,7 @@ export default function SignupPage() {
           />
         </form>
       </main>
-    </div>
+    </Background>
   );
 }
 
