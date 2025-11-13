@@ -63,11 +63,12 @@ export default function SignupPage() {
 
       {/* Signup Form */}
       <main className="flex-1 flex items-center justify-center">
-        <form className="flex flex-col w-full max-w-xs">
+        <form className="flex flex-col items-center w-full max-w-xs">
           <InputField
             placeholder="First Name"
             id="firstName"
             value={state.firstName}
+            className="w-full"
             onChange={handleChange}
             required
           />
@@ -75,6 +76,7 @@ export default function SignupPage() {
             placeholder="Last Name"
             id="lastName"
             value={state.lastName}
+            className="w-full"
             onChange={handleChange}
             required
           />
@@ -82,6 +84,7 @@ export default function SignupPage() {
             placeholder="Username"
             id="userName"
             value={state.userName}
+            className="w-full"
             onChange={handleChange}
             required
           />
@@ -90,6 +93,7 @@ export default function SignupPage() {
             id="phoneNumber"
             type="tel"
             value={state.phoneNumber}
+            className="w-full"
             onChange={handleChange}
             required
           />
@@ -98,6 +102,7 @@ export default function SignupPage() {
             id="email"
             type="email"
             value={state.email}
+            className="w-full"
             onChange={handleChange}
           />
           <InputField
@@ -105,9 +110,10 @@ export default function SignupPage() {
             id="password"
             type="password"
             value={state.password}
+            className="w-full"
             onChange={handleChange}
             required
-            marginBottom={errorMessage ? "mb-2" : "mb-10"}
+            marginBottom={errorMessage ? "mb-2" : "mb-8"}
           />
           {errorMessage && (
             <p className="text-red-600 text-sm mb-10 pl-3">{errorMessage}</p>

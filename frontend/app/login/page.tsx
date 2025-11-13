@@ -44,11 +44,12 @@ export default function LoginPage({
 
         {/* Login Form */}
         <main className="flex-1 flex items-center justify-center">
-          <form className="flex flex-col w-full max-w-xs">
+          <form className="flex flex-col items-center w-full max-w-xs">
             <InputField
               placeholder="Username"
               id="username"
               value={state.username}
+              className="w-full"
               onChange={handleUsernameChange}
             />
             <InputField
@@ -56,6 +57,7 @@ export default function LoginPage({
               id="password"
               type="password"
               value={state.password}
+              className="w-full mb-8"
               onChange={handlePasswordChange}
             />
             {errorMessage && (

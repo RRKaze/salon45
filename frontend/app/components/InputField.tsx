@@ -12,12 +12,23 @@ export default function InputField({
   ...props 
 }: InputFieldProps) {
   const baseStyle =
-    `border border-slate-500 py-2 pl-3 rounded-full color-white active:outline-white-0 ${marginBottom} text-sm text-gray-700 hover:text-brand`;
+    `border 
+    border-slate-500 
+    shadow-lg 
+    p-3 
+    rounded-md 
+    focus-visible:outline-(--color-brand)
+    focus-visible:outline-2
+    focus-visible:placeholder:font-semibold
+    hover:placeholder:font-semibold
+    ${marginBottom} 
+    text-sm 
+    text-black`;
 
   return (
-    <div className="flex flex-col">
+    <>
       {label && <label htmlFor={props.id} className="text-sm mb-1 text-gray-600">{label}</label>}
       <input {...props} className={`${baseStyle} ${className}`} />
-    </div>
+    </>
   );
 }

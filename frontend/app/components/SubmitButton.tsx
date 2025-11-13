@@ -15,7 +15,7 @@ export default function SubmitButton({
     <button
       onClick={onClick}
       disabled={disabled}
-      className="text-sm px-4 py-2 rounded-full bg-brand text-white hover:bg-brand-dark transition disabled:opacity-50 disabled:cursor-not-allowed mt-10"
+      className="py-2 px-10 rounded-full bg-brand text-white hover:bg-brand-dark transition disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {children}
     </button>
