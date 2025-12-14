@@ -2,13 +2,11 @@ import React from "react";
 
 interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
-  marginBottom?: "mb-2" | "mb-4" | "mb-10";
 }
 
 export default function InputField({ 
   label, 
   className = "", 
-  marginBottom = "mb-4",
   ...props 
 }: InputFieldProps) {
   const baseStyle =
@@ -21,7 +19,7 @@ export default function InputField({
     focus-visible:outline-2
     focus-visible:placeholder:font-semibold
     hover:placeholder:font-semibold
-    ${marginBottom} 
+    mb-4 
     text-sm 
     text-black`;
 

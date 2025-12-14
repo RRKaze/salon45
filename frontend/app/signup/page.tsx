@@ -113,12 +113,12 @@ export default function SignupPage() {
             className="w-full"
             onChange={handleChange}
             required
-            marginBottom={errorMessage ? "mb-2" : "mb-8"}
           />
           {errorMessage && (
             <p className="text-red-600 text-sm mb-10 pl-3">{errorMessage}</p>
           )}
           <SubmitButton
+            className="mt-2"
             onClick={(e) => {
               e.preventDefault();
               handleSignup();
