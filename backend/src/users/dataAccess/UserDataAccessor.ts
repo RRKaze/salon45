@@ -29,7 +29,6 @@ export class UserDataAccessor implements IUserDataAccessor {
     };
 
     const count = await collection.countDocuments(filter);
-    console.log(`trying to identify user count: ${count} 0000000000`);
     return count > 0;
   }
 
@@ -68,9 +67,7 @@ export class UserDataAccessor implements IUserDataAccessor {
 
   public async insertUser(user: User): Promise<InferIdType<User>> {
     const collection = await this.getUserCollection();
-    console.log(collection.dbName);
     const result = await collection.insertOne(user);
-    console.log(result);
     return result.insertedId;
   }
 
