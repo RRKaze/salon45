@@ -1,0 +1,203 @@
+export type OpenPeriod = {
+  open: string;   // e.g. "09:00"
+  close: string;  // e.g. "17:30"
+};
+
+export type NormalSchedule = {
+  id: string;
+  description: string;
+  start: string | Date;
+  sunday: OpenPeriod[];
+  monday: OpenPeriod[];
+  tuesday: OpenPeriod[];
+  wednesday: OpenPeriod[];
+  thursday: OpenPeriod[];
+  friday: OpenPeriod[];
+  saturday: OpenPeriod[];
+};
+
+export const TestSchedules: NormalSchedule[] = [
+  {
+    id: "1",
+    description: "Standard Week",
+    start: "2024-01-01T14:52:01.0000000Z",
+    sunday: [],
+    monday: [{ open: "09:00", close: "17:00" }],
+    tuesday: [{ open: "09:00", close: "17:00" }],
+    wednesday: [{ open: "09:00", close: "17:00" }],
+    thursday: [{ open: "09:00", close: "17:00" }],
+    friday: [{ open: "09:00", close: "17:00" }],
+    saturday: [{ open: "10:00", close: "14:00" }],
+  },
+  {
+    id: "2",
+    description: "Split Shifts",
+    start: "2024-03-15T00:00:00.000Z",
+    sunday: [],
+    monday: [
+      { open: "08:00", close: "12:00" },
+      { open: "13:00", close: "17:00" },
+    ],
+    tuesday: [
+      { open: "08:00", close: "12:00" },
+      { open: "13:00", close: "17:00" },
+    ],
+    wednesday: [
+      { open: "08:00", close: "12:00" },
+      { open: "13:00", close: "17:00" },
+    ],
+    thursday: [
+      { open: "08:00", close: "12:00" },
+      { open: "13:00", close: "17:00" },
+    ],
+    friday: [
+      { open: "08:00", close: "12:00" },
+      { open: "13:00", close: "18:00" },
+    ],
+    saturday: [{ open: "09:00", close: "13:00" }],
+  },
+  {
+    id: "3",
+    description: "Evening Hours",
+    start: "2024-06-01T00:00:00.000Z",
+    sunday: [],
+    monday: [{ open: "12:00", close: "20:00" }],
+    tuesday: [{ open: "12:00", close: "20:00" }],
+    wednesday: [{ open: "12:00", close: "20:00" }],
+    thursday: [{ open: "12:00", close: "20:00" }],
+    friday: [{ open: "12:00", close: "21:00" }],
+    saturday: [{ open: "10:00", close: "16:00" }],
+  },
+  {
+    id: "4",
+    description: "Weekend Only",
+    start: "2024-08-10T00:00:00.000Z",
+    sunday: [{ open: "10:00", close: "16:00" }],
+    monday: [],
+    tuesday: [],
+    wednesday: [],
+    thursday: [],
+    friday: [],
+    saturday: [{ open: "09:00", close: "17:00" }],
+  },
+  {
+    id: "5",
+    description: "Holiday Season Extended",
+    start: "2024-12-01T00:00:00.000Z",
+    sunday: [{ open: "11:00", close: "15:00" }],
+    monday: [{ open: "09:00", close: "19:00" }],
+    tuesday: [{ open: "09:00", close: "19:00" }],
+    wednesday: [{ open: "09:00", close: "19:00" }],
+    thursday: [{ open: "09:00", close: "20:00" }],
+    friday: [{ open: "09:00", close: "20:00" }],
+    saturday: [{ open: "10:00", close: "18:00" }],
+  },
+  {
+    id: "16",
+    description: "Weekend Only",
+    start: "2024-08-10T00:00:00.000Z",
+    sunday: [{ open: "10:00", close: "16:00" }],
+    monday: [],
+    tuesday: [],
+    wednesday: [],
+    thursday: [],
+    friday: [],
+    saturday: [{ open: "09:00", close: "17:00" }],
+  },
+  {
+    id: "17",
+    description: "Holiday Season Extended",
+    start: "2024-12-01T00:00:00.000Z",
+    sunday: [{ open: "11:00", close: "15:00" }],
+    monday: [{ open: "09:00", close: "19:00" }],
+    tuesday: [{ open: "09:00", close: "19:00" }],
+    wednesday: [{ open: "09:00", close: "19:00" }],
+    thursday: [{ open: "09:00", close: "20:00" }],
+    friday: [{ open: "09:00", close: "20:00" }],
+    saturday: [{ open: "10:00", close: "18:00" }],
+  },
+  {
+    id: "6",
+    description: "Early Bird Special",
+    start: "2024-02-01T00:00:00.000Z",
+    sunday: [],
+    monday: [{ open: "07:00", close: "15:00" }],
+    tuesday: [{ open: "07:00", close: "15:00" }],
+    wednesday: [{ open: "07:00", close: "15:00" }],
+    thursday: [{ open: "07:00", close: "15:00" }],
+    friday: [{ open: "07:00", close: "15:00" }],
+    saturday: [{ open: "08:00", close: "12:00" }],
+  },
+  {
+    id: "7",
+    description: "Night Owl Schedule",
+    start: "2024-04-01T00:00:00.000Z",
+    sunday: [],
+    monday: [{ open: "14:00", close: "22:00" }],
+    tuesday: [{ open: "14:00", close: "22:00" }],
+    wednesday: [{ open: "14:00", close: "22:00" }],
+    thursday: [{ open: "14:00", close: "23:00" }],
+    friday: [{ open: "14:00", close: "00:00" }],
+    saturday: [{ open: "15:00", close: "23:00" }],
+  },
+  {
+    id: "8",
+    description: "Flexible Hours",
+    start: "2024-05-01T00:00:00.000Z",
+    sunday: [{ open: "10:00", close: "14:00" }],
+    monday: [{ open: "09:00", close: "13:00" }, { open: "15:00", close: "19:00" }],
+    tuesday: [{ open: "09:00", close: "13:00" }, { open: "15:00", close: "19:00" }],
+    wednesday: [{ open: "09:00", close: "18:00" }],
+    thursday: [{ open: "09:00", close: "13:00" }, { open: "15:00", close: "19:00" }],
+    friday: [{ open: "09:00", close: "20:00" }],
+    saturday: [{ open: "10:00", close: "18:00" }],
+  },
+  {
+    id: "9",
+    description: "Summer Schedule",
+    start: "2024-07-01T00:00:00.000Z",
+    sunday: [{ open: "11:00", close: "17:00" }],
+    monday: [{ open: "10:00", close: "18:00" }],
+    tuesday: [{ open: "10:00", close: "18:00" }],
+    wednesday: [{ open: "10:00", close: "18:00" }],
+    thursday: [{ open: "10:00", close: "18:00" }],
+    friday: [{ open: "10:00", close: "19:00" }],
+    saturday: [{ open: "09:00", close: "19:00" }],
+  },
+  {
+    id: "10",
+    description: "Winter Schedule",
+    start: "2024-11-01T00:00:00.000Z",
+    sunday: [],
+    monday: [{ open: "10:00", close: "16:00" }],
+    tuesday: [{ open: "10:00", close: "16:00" }],
+    wednesday: [{ open: "10:00", close: "16:00" }],
+    thursday: [{ open: "10:00", close: "16:00" }],
+    friday: [{ open: "10:00", close: "17:00" }],
+    saturday: [{ open: "11:00", close: "15:00" }],
+  },
+  {
+    id: "11",
+    description: "Spring Hours",
+    start: "2024-03-20T00:00:00.000Z",
+    sunday: [{ open: "12:00", close: "16:00" }],
+    monday: [{ open: "09:00", close: "17:00" }],
+    tuesday: [{ open: "09:00", close: "17:00" }],
+    wednesday: [{ open: "09:00", close: "17:00" }],
+    thursday: [{ open: "09:00", close: "18:00" }],
+    friday: [{ open: "09:00", close: "18:00" }],
+    saturday: [{ open: "10:00", close: "17:00" }],
+  },
+  {
+    id: "12",
+    description: "Fall Schedule",
+    start: "2024-09-22T00:00:00.000Z",
+    sunday: [],
+    monday: [{ open: "09:30", close: "17:30" }],
+    tuesday: [{ open: "09:30", close: "17:30" }],
+    wednesday: [{ open: "09:30", close: "17:30" }],
+    thursday: [{ open: "09:30", close: "18:00" }],
+    friday: [{ open: "09:30", close: "18:00" }],
+    saturday: [{ open: "10:00", close: "16:00" }],
+  },
+];

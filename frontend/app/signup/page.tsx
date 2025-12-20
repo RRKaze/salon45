@@ -1,10 +1,10 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
-import Navigation from "../components/Navigation";
-import InputField from "../components/InputField";
-import SubmitButton from "../components/SubmitButton";
-import Background from "../components/Background";
+import Navigation from "../../components/Navigation";
+import InputField from "../../components/InputField";
+import SubmitButton from "../../components/SubmitButton";
+import Background from "../../components/Background";
 
 export default function SignupPage() {
   const router = useRouter();

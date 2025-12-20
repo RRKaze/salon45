@@ -4,6 +4,7 @@ import { normalizeDay, type OpenPeriod } from "./OpenPeriod";
 export class NormalSchedule {
   constructor(
     private _id: string,
+    private _description: string,
     private _sunday: OpenPeriod[],
     private _monday: OpenPeriod[],
     private _tuesday: OpenPeriod[],
@@ -18,6 +19,11 @@ export class NormalSchedule {
   get id(): string {
     return this._id;
   }
+
+  get description(): string {
+    return this._description;
+  }
+
   get start(): Date {
     return this._start;
   }
