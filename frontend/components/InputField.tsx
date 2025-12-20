@@ -19,14 +19,15 @@ export default function InputField({
     focus-visible:outline-2
     focus-visible:placeholder:font-semibold
     hover:placeholder:font-semibold
+    hover:opacity-85
     mb-4 
     text-sm 
     text-black`;
 
   return (
-    <>
-      {label && <label htmlFor={props.id} className="text-sm mb-1 text-gray-600">{label}</label>}
+    <div className="mb-4">
+      {label && <label htmlFor={props.id} className="block text-sm mb-2 text-gray-600">{label}</label>}
       <input {...props} className={`${baseStyle} ${className}`} />
-    </>
+    </div>
   );
 }

@@ -183,6 +183,7 @@ export default function EditSchedulePage() {
               <InputField
                 label="Description"
                 type="text"
+                className="w-full"
                 value={schedule.description}
                 onChange={(e) =>
                   setSchedule({ ...schedule, description: e.target.value })
