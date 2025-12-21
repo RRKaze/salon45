@@ -5,12 +5,12 @@ import { DateTime } from "luxon";
  * @param input Should be a date in ISO format (e.g. 2024-01-31) without TZ nor time information
  * @returns Formatted date
  */
-export function formatDate(input: string): string {
+export function formatDate(input: string, format: Intl.DateTimeFormatOptions = DateTime.DATE_MED): string {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(input)) {
     return "";
   }
   const date = DateTime.fromISO(input);
-  return date.isValid ? date.toLocaleString(DateTime.DATE_MED) : "";
+  return date.isValid ? date.toLocaleString(format) : "";
 }
 
 /**
