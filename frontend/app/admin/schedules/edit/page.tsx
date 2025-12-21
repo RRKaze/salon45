@@ -27,7 +27,7 @@ export default function EditSchedulePage() {
         resolve({
           id,
           description: "Standard Week",
-          start: "2024-01-01T14:52:01.0000000Z",
+          start: "2024-01-01",
           sunday: [],
           monday: [{ open: "09:00", close: "17:00" }],
           tuesday: [{ open: "09:00", close: "17:00" }],

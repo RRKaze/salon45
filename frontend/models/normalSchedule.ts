@@ -6,7 +6,7 @@ export type OpenPeriod = {
 export type NormalSchedule = {
   id: string;
   description: string;
-  start: string | Date;
+  start: string;
   sunday: OpenPeriod[];
   monday: OpenPeriod[];
   tuesday: OpenPeriod[];
@@ -20,7 +20,7 @@ export const TestSchedules: NormalSchedule[] = [
   {
     id: "1",
     description: "Standard Week",
-    start: "2024-01-01T14:52:01.0000000Z",
+    start: "2024-01-01",
     sunday: [],
     monday: [{ open: "09:00", close: "17:00" }],
     tuesday: [{ open: "09:00", close: "17:00" }],
@@ -32,7 +32,7 @@ export const TestSchedules: NormalSchedule[] = [
   {
     id: "2",
     description: "Split Shifts",
-    start: "2024-03-15T00:00:00.000Z",
+    start: "2024-03-15",
     sunday: [],
     monday: [
       { open: "08:00", close: "12:00" },
@@ -59,7 +59,7 @@ export const TestSchedules: NormalSchedule[] = [
   {
     id: "3",
     description: "Evening Hours",
-    start: "2024-06-01T00:00:00.000Z",
+    start: "2024-06-01",
     sunday: [],
     monday: [{ open: "12:00", close: "20:00" }],
     tuesday: [{ open: "12:00", close: "20:00" }],
@@ -71,7 +71,7 @@ export const TestSchedules: NormalSchedule[] = [
   {
     id: "4",
     description: "Weekend Only",
-    start: "2024-08-10T00:00:00.000Z",
+    start: "2024-08-10",
     sunday: [{ open: "10:00", close: "16:00" }],
     monday: [],
     tuesday: [],
@@ -83,7 +83,7 @@ export const TestSchedules: NormalSchedule[] = [
   {
     id: "5",
     description: "Holiday Season Extended",
-    start: "2024-12-01T00:00:00.000Z",
+    start: "2024-12-01",
     sunday: [{ open: "11:00", close: "15:00" }],
     monday: [{ open: "09:00", close: "19:00" }],
     tuesday: [{ open: "09:00", close: "19:00" }],
@@ -95,7 +95,7 @@ export const TestSchedules: NormalSchedule[] = [
   {
     id: "16",
     description: "Weekend Only",
-    start: "2024-08-10T00:00:00.000Z",
+    start: "2024-08-10",
     sunday: [{ open: "10:00", close: "16:00" }],
     monday: [],
     tuesday: [],
@@ -107,7 +107,7 @@ export const TestSchedules: NormalSchedule[] = [
   {
     id: "17",
     description: "Holiday Season Extended",
-    start: "2024-12-01T00:00:00.000Z",
+    start: "2024-12-01",
     sunday: [{ open: "11:00", close: "15:00" }],
     monday: [{ open: "09:00", close: "19:00" }],
     tuesday: [{ open: "09:00", close: "19:00" }],
@@ -119,7 +119,7 @@ export const TestSchedules: NormalSchedule[] = [
   {
     id: "6",
     description: "Early Bird Special",
-    start: "2024-02-01T00:00:00.000Z",
+    start: "2024-02-01",
     sunday: [],
     monday: [{ open: "07:00", close: "15:00" }],
     tuesday: [{ open: "07:00", close: "15:00" }],
@@ -131,7 +131,7 @@ export const TestSchedules: NormalSchedule[] = [
   {
     id: "7",
     description: "Night Owl Schedule",
-    start: "2024-04-01T00:00:00.000Z",
+    start: "2024-04-01",
     sunday: [],
     monday: [{ open: "14:00", close: "22:00" }],
     tuesday: [{ open: "14:00", close: "22:00" }],
@@ -143,7 +143,7 @@ export const TestSchedules: NormalSchedule[] = [
   {
     id: "8",
     description: "Flexible Hours",
-    start: "2024-05-01T00:00:00.000Z",
+    start: "2024-05-01",
     sunday: [{ open: "10:00", close: "14:00" }],
     monday: [{ open: "09:00", close: "13:00" }, { open: "15:00", close: "19:00" }],
     tuesday: [{ open: "09:00", close: "13:00" }, { open: "15:00", close: "19:00" }],
@@ -155,7 +155,7 @@ export const TestSchedules: NormalSchedule[] = [
   {
     id: "9",
     description: "Summer Schedule",
-    start: "2024-07-01T00:00:00.000Z",
+    start: "2024-07-01",
     sunday: [{ open: "11:00", close: "17:00" }],
     monday: [{ open: "10:00", close: "18:00" }],
     tuesday: [{ open: "10:00", close: "18:00" }],
@@ -167,7 +167,7 @@ export const TestSchedules: NormalSchedule[] = [
   {
     id: "10",
     description: "Winter Schedule",
-    start: "2024-11-01T00:00:00.000Z",
+    start: "2024-11-01",
     sunday: [],
     monday: [{ open: "10:00", close: "16:00" }],
     tuesday: [{ open: "10:00", close: "16:00" }],
@@ -179,7 +179,7 @@ export const TestSchedules: NormalSchedule[] = [
   {
     id: "11",
     description: "Spring Hours",
-    start: "2024-03-20T00:00:00.000Z",
+    start: "2024-03-20",
     sunday: [{ open: "12:00", close: "16:00" }],
     monday: [{ open: "09:00", close: "17:00" }],
     tuesday: [{ open: "09:00", close: "17:00" }],
@@ -191,7 +191,7 @@ export const TestSchedules: NormalSchedule[] = [
   {
     id: "12",
     description: "Fall Schedule",
-    start: "2024-09-22T00:00:00.000Z",
+    start: "2024-09-22",
     sunday: [],
     monday: [{ open: "09:30", close: "17:30" }],
     tuesday: [{ open: "09:30", close: "17:30" }],
