@@ -5,23 +5,20 @@ import Navigation from "../../components/Navigation";
 import InputField from "../../components/InputField";
 import SubmitButton from "../../components/SubmitButton";
 import Background from "../../components/Background";
+import {authService} from "@/utils/api";
 
 
-export default function LoginPage({
-    children,
-  }: Readonly<{
-    children: React.ReactNode;
-  }>) {
+export default function LoginPage() {
     const router = useRouter();
     const [state, setState] = useState({username:"", password:""});
     const [errorMessage, setErrorMessage] = useState("");
     
     async function authentication(){
-        const res = await fetch(`http://localhost:3001/api/auth/login?username=${state.username}&password=${state.password}`,{method:"POST"});
-        
+        const res = await authService.login(state.username, state.password);
+
         console.log("submit clicked", JSON.stringify(state));
         console.log("response", JSON.stringify(res));
-        if (res.status === 200) {
+        if (res.success) {
             router.push("/home");
         } else {
             setErrorMessage("Authentication failed. Please check your username and password.");

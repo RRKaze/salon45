@@ -6,6 +6,7 @@ import SubmitButton from "../../../components/SubmitButton";
 import { formatDate, toDisplayTime } from "../../../utils/scheduleUtils";
 import { DateTime } from "luxon";
 import NormalButton from "@/components/NormalButton";
+import {appointmentService} from "@/utils/api";
 
 // Configuration constants
 const MAX_LOAD_MORE_CLICKS = 3; // Maximum number of times user can load more days
@@ -149,15 +150,7 @@ export default function NewAppointmentPage() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // TODO: Replace with actual API call
-      // const response = await fetch('/api/appointments', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     date: selectedSlot.date,
-      //     startTime: selectedSlot.timeRange.start,
-      //     endTime: selectedSlot.timeRange.end,
-      //   }),
-      // });
+      // await appointmentService.bookAppointment(selectedSlot.date, selectedSlot.timeRange.start);
       
       alert(`✓ Appointment booked!\n\nDate: ${formatDate(selectedSlot.date)}\nTime: ${selectedSlot.timeRange.start} - ${selectedSlot.timeRange.end}`);
       

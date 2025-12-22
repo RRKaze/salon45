@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation";
 import Background from "@/components/Background";
 import { NormalSchedule, OpenPeriod, TestSchedules } from "../../../models/normalSchedule";
 import { formatDate, toDisplayTime } from "@/utils/scheduleUtils";
+import {scheduleService} from "@/utils/api";
 
 const PAGE_SIZE = 10;
 
@@ -45,16 +46,9 @@ export default function AdminSchedulesPage() {
       // Mock data for testing - replace with real API call when backend is ready
       const data = await loadSchedulesMock(pageSize, afterId);
 
+
       /* When backend is ready, use this instead:
-      const url = new URL("http://localhost:3001/api/admin/schedules");
-      url.searchParams.append("pageSize", pageSize.toString());
-      if (afterId) {
-        url.searchParams.append("afterId", afterId);
-      }
-      
-      const res = await fetch(url.toString(), {
-        cache: "no-store",
-      });
+      const res = scheduleService.getSchedules(pageSize, afterId);
       if (!res.ok) {
         throw new Error(`Failed to load schedules (${res.status})`);
       }

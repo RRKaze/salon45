@@ -1,10 +1,11 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { ChangeEvent, useState } from "react";
+import {useRouter} from "next/navigation";
+import {useState} from "react";
 import Navigation from "../../components/Navigation";
 import InputField from "../../components/InputField";
 import SubmitButton from "../../components/SubmitButton";
 import Background from "../../components/Background";
+import {userService} from "@/utils/api";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -30,20 +31,13 @@ export default function SignupPage() {
     };
 
     try {
-      const res = await fetch("http://localhost:3001/api/users/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userRequestDto),
-      });
+      const res = await userService.createUser(userRequestDto);
       console.log("response", JSON.stringify(res));
-      if (res.status === 201) {
+      if (!res.error) {
         router.push("/home");
       } else {
-        const error = await res.json();
-        console.error("Signup failed:", error);
-        setErrorMessage(error.error || "Signup failed. Please try again.");
+        console.error("Signup failed:", res.error);
+        setErrorMessage(`Signup failed. Please try again. ${res.error}`);
       }
     } catch (error) {
       console.error("Signup error:", error);
