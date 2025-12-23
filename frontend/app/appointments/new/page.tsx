@@ -3,81 +3,14 @@ import { useState, useEffect } from "react";
 import Navigation from "../../../components/Navigation";
 import Background from "../../../components/Background";
 import SubmitButton from "../../../components/SubmitButton";
-import { formatDate, toDisplayTime } from "../../../utils/scheduleUtils";
+import { formatDate, toDisplayTime } from "@/utils/scheduleUtils";
 import { DateTime } from "luxon";
 import NormalButton from "@/components/NormalButton";
-import {appointmentService} from "@/utils/api";
-
-// Configuration constants
-const MAX_LOAD_MORE_CLICKS = 3; // Maximum number of times user can load more days
-const DAYS_PER_LOAD = 5; // Number of days to load per request
-
-// Type definitions for availability data
-interface TimeRange {
-  start: string; // Time in HH:mm format (e.g. "09:00")
-  end: string;   // Time in HH:mm format (e.g. "10:00")
-}
-
-interface DayAvailability {
-  date: string; // ISO date format: "2025-01-31"
-  timeRanges: TimeRange[];
-}
+import { DayAvailability, TimeRange, AppointmentServiceProvider } from "@/utils/api";
 
 interface SelectedSlot {
   date: string;
   timeRange: TimeRange;
-}
-
-/**
- * Mock API call to fetch available appointment days
- * TODO: Replace with actual backend API call
- * Expected endpoint: GET /api/appointments/availability?offset={offset}&days={days}
- */
-async function fetchAvailableDays(offset: number): Promise<DayAvailability[]> {
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 300));
-  
-  const mockData: DayAvailability[] = [];
-  const today = new Date();
-  
-  for (let i = 0; i < DAYS_PER_LOAD; i++) {
-    const dayOffset = offset * DAYS_PER_LOAD + i;
-    const date = new Date(today);
-    date.setDate(today.getDate() + dayOffset);
-    
-    // Format date as YYYY-MM-DD (local timezone)
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const dateString = `${year}-${month}-${day}`;
-    
-    // Generate mock time slots
-    const timeRanges: TimeRange[] = [];
-    const allPossibleSlots = [
-      { start: "09:00", end: "10:00" },
-      { start: "10:00", end: "11:00" },
-      { start: "11:00", end: "12:00" },
-      { start: "13:00", end: "14:00" },
-      { start: "14:00", end: "15:00" },
-      { start: "15:00", end: "16:00" },
-      { start: "16:00", end: "17:00" },
-      { start: "17:00", end: "18:00" },
-    ];
-    
-    // Randomly make some slots available (simulating real availability)
-    allPossibleSlots.forEach(slot => {
-      if (Math.random() > 0.3) { // 70% chance of being available
-        timeRanges.push(slot);
-      }
-    });
-    
-    mockData.push({
-      date: dateString,
-      timeRanges,
-    });
-  }
-  
-  return mockData;
 }
 
 export default function NewAppointmentPage() {
@@ -86,6 +19,7 @@ export default function NewAppointmentPage() {
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
   const [bookingInProgress, setBookingInProgress] = useState(false);
+  const [canLoadMore, setCanLoadMore] = useState(true);
 
   // Load initial days on component mount
   useEffect(() => {
@@ -99,14 +33,15 @@ export default function NewAppointmentPage() {
   const loadDays = async (offset: number) => {
     setLoading(true);
     try {
-      const newDays = await fetchAvailableDays(offset);
+      const response = await AppointmentServiceProvider.get().getAvailability(offset, 5);
       if (offset === 0) {
         // Initial load: replace all days
-        setAvailableDays(newDays);
+        setAvailableDays(response.availableDays);
       } else {
         // Pagination: append new days
-        setAvailableDays(prev => [...prev, ...newDays]);
+        setAvailableDays(prev => [...prev, ...response.availableDays]);
       }
+      setCanLoadMore(response.more);
     } catch (error) {
       console.error("Failed to load available days:", error);
       // TODO: Show error notification to user
@@ -164,8 +99,6 @@ export default function NewAppointmentPage() {
       setBookingInProgress(false);
     }
   };
-
-  const canLoadMore = offset < MAX_LOAD_MORE_CLICKS;
 
   return (
     <Background>
