@@ -6,19 +6,25 @@ import InputField from "../../components/InputField";
 import SubmitButton from "../../components/SubmitButton";
 import Background from "../../components/Background";
 import {authService} from "@/utils/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 
 export default function LoginPage() {
     const router = useRouter();
+    const { refetchUser } = useAuth();
     const [state, setState] = useState({username:"", password:""});
     const [errorMessage, setErrorMessage] = useState("");
     
     async function authentication(){
       try{
+        console.log("Attempting login with", state.username, state.password);
         await authService.login(state.username, state.password);
+        console.log("Login successful");
+        await refetchUser(); // Refresh auth state after login
         router.push("/home");
       }
       catch(e){
+        console.error("Login failed:", e);
         setErrorMessage("Authentication failed. Please check your username and password.");
         return;
       }

@@ -7,6 +7,7 @@ interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export default function InputField({ 
   label, 
   className = "", 
+  value,
   ...props 
 }: InputFieldProps) {
   const baseStyle =
@@ -24,10 +25,13 @@ export default function InputField({
     text-sm 
     text-black`;
 
+  // Ensure value is always a string to avoid controlled/uncontrolled input warning
+  const inputValue = value ?? "";
+
   return (
     <div className="mb-4">
       {label && <label htmlFor={props.id} className="block text-sm mb-2 text-gray-600">{label}</label>}
-      <input {...props} className={`${baseStyle} ${className}`} />
+      <input {...props} value={inputValue} className={`${baseStyle} ${className}`} />
     </div>
   );
 }

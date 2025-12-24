@@ -19,6 +19,7 @@ export class AuthServices {
     router.post("/login", (req, res, next) =>
       passport.authenticate("local", (err: Error, usr: User) => {
         if (err) {
+          console.log("Authentication error:", err);
           return next(err);
         } else if (!usr) {
           return res
@@ -27,12 +28,33 @@ export class AuthServices {
         }
         return req.logIn(usr, (err) => {
           if (err) {
+            console.error("Login error:", err);
             return next(err);
           }
           return res.json({ success: true });
         });
       })(req, res, next),
     );
+
+    router.post("/logout", (req, res) => {
+      req.logout((err) => {
+        if (err) {
+          console.error("Logout error:", err);
+          res.status(500).json({ success: false, error: "Logout failed" });
+          return;
+        }
+        req.session.destroy((err) => {
+          if (err) {
+            console.error("Session destroy error:", err);
+            res
+              .status(500)
+              .json({ success: false, error: "Session destroy failed" });
+            return;
+          }
+          res.json({ success: true });
+        });
+      });
+    });
 
     return router;
   }

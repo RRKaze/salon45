@@ -1,4 +1,4 @@
-import { Collection, type Filter, type InferIdType } from "mongodb";
+import { Collection, type Filter, type InferIdType, ObjectId } from "mongodb";
 import { type User } from "../models/User.ts";
 import type { IMongoManager } from "../../mongo/IMongoManager.ts";
 import type { IUserDataAccessor } from "./IUserDataAccessor.ts";
@@ -56,13 +56,19 @@ export class UserDataAccessor implements IUserDataAccessor {
 
   public async findByUserId(userId: string): Promise<User | null> {
     const collection = await this.getUserCollection();
-    const filter: Filter<User> = {
-      userId: {
-        $regex: new RegExp(`^${userId}$`, "i"),
-      },
-    };
+    // Convert string ID to ObjectId if it's a valid ObjectId string
+    let idFilter: any;
+    try {
+      if (ObjectId.isValid(userId)) {
+        idFilter = { _id: new ObjectId(userId) };
+      } else {
+        idFilter = { _id: userId };
+      }
+    } catch {
+      idFilter = { _id: userId };
+    }
 
-    return await collection.findOne(filter);
+    return await collection.findOne(idFilter);
   }
 
   public async insertUser(user: User): Promise<InferIdType<User>> {
@@ -76,11 +82,31 @@ export class UserDataAccessor implements IUserDataAccessor {
     newInfo: Partial<User>,
   ): Promise<User | null> {
     const collection = await this.getUserCollection();
+    // Convert string ID to ObjectId if it's a valid ObjectId string
+    let idFilter: any;
+    try {
+      // Try to convert to ObjectId if it's a valid ObjectId string
+      if (ObjectId.isValid(userId)) {
+        idFilter = { _id: new ObjectId(userId) };
+      } else {
+        // If not a valid ObjectId, try as string
+        idFilter = { _id: userId };
+      }
+    } catch {
+      // If conversion fails, use as string
+      idFilter = { _id: userId };
+    }
+
+    console.log("Updating user with filter:", idFilter);
+    console.log("Update info:", newInfo);
+
     const result = await collection.findOneAndUpdate(
-      { userId },
+      idFilter,
       { $set: newInfo },
       { returnDocument: "after" },
     );
+
+    console.log("Update result:", result ? "Success" : "User not found");
     return result;
   }
 

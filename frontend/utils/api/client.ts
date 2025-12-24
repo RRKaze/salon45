@@ -15,6 +15,7 @@ async function apiRequest<T>(
   
   const response = await fetch(url, {
     ...options,
+    credentials: 'include', // Include cookies for session-based auth
     headers: {
       'Content-Type': 'application/json',
       ...options?.headers,

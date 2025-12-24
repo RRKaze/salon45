@@ -14,11 +14,18 @@ export class UpdateUserService implements IUpdateUserService {
 
   async updateUser(
     userId: string,
-    update: UserRequestDto,
+    update: Partial<UserRequestDto>,
   ): Promise<UserResponseDto> {
+    // Only update fields that are provided, exclude password and username from updates
+    const updateData: Partial<User> = {};
+    if (update.firstName !== undefined) updateData.firstName = update.firstName;
+    if (update.lastName !== undefined) updateData.lastName = update.lastName;
+    if (update.phone !== undefined) updateData.phone = update.phone;
+    if (update.email !== undefined) updateData.email = update.email;
+
     const userAfterUpdate = await this.userDataAccessor.updateUser(
       userId,
-      update as User,
+      updateData,
     );
     if (!userAfterUpdate) {
       throw UsersError.userNotFound;

@@ -19,6 +19,7 @@ export class UserServices {
     const userController = container.resolve(UserController);
 
     router.get("/", (req, res) => userController.getUsers(req, res));
+    router.get("/me", (req, res) => userController.getCurrentUser(req, res));
     router.post("/add", (req, res) => userController.addUser(req, res));
     router.post("/update/:userId", (req, res) =>
       userController.updateUser(req, res),

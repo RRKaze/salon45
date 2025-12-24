@@ -1,10 +1,12 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Navigation() {
   const pathname = usePathname();
   const isHomePage = pathname === "/home";
+  const { isAuthenticated, isLoading } = useAuth();
 
   // Use hash links on home page, full links on other pages
   const pricingLink = isHomePage ? "#pricing" : "/home#pricing";
@@ -53,18 +55,31 @@ export default function Navigation() {
 
         {/* Auth buttons */}
         <div className="flex items-center gap-3">
-          <Link
-            href="/login"
-            className="text-sm text-gray-700 hover:text-brand"
-          >
-            Log in
-          </Link>
-          <Link
-            href="/signup"
-            className="text-sm px-4 py-2 rounded-full bg-brand text-white hover:bg-brand-dark transition"
-          >
-            Sign up
-          </Link>
+          {isLoading ? (
+            <div className="text-sm text-gray-500">Loading...</div>
+          ) : isAuthenticated ? (
+            <Link
+              href="/profile"
+              className="text-sm px-4 py-2 rounded-full bg-brand text-white hover:bg-brand-dark transition"
+            >
+              My Profile
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="text-sm text-gray-700 hover:text-brand"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/signup"
+                className="text-sm px-4 py-2 rounded-full bg-brand text-white hover:bg-brand-dark transition"
+              >
+                Sign up
+              </Link>
+            </>
+          )}
         </div>
       </nav>
     </header>

@@ -4,6 +4,6 @@ import type { UserResponseDto } from "../dtos/UserResponseDto";
 export interface IUpdateUserService {
   updateUser(
     userId: string,
-    userRequestDto: UserRequestDto,
+    userRequestDto: Partial<UserRequestDto>,
   ): Promise<UserResponseDto>;
 }

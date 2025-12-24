@@ -15,7 +15,14 @@ const app: Application = express();
 const PORT = process.env["PORT"] || 3000;
 
 // Middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env["FRONTEND_URL"] || "http://localhost:4000",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 app.use(express.json());
 app.use(Session.SessionHandler());
 app.use(passport.authenticate("session"));
