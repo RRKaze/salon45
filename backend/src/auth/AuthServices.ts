@@ -29,7 +29,7 @@ export class AuthServices {
           if (err) {
             return next(err);
           }
-          return res.json();
+          return res.json({ success: true });
         });
       })(req, res, next),
     );

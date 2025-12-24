@@ -14,15 +14,14 @@ export default function LoginPage() {
     const [errorMessage, setErrorMessage] = useState("");
     
     async function authentication(){
-        const res = await authService.login(state.username, state.password);
-
-        console.log("submit clicked", JSON.stringify(state));
-        console.log("response", JSON.stringify(res));
-        if (res.success) {
-            router.push("/home");
-        } else {
-            setErrorMessage("Authentication failed. Please check your username and password.");
-        }
+      try{
+        await authService.login(state.username, state.password);
+        router.push("/home");
+      }
+      catch(e){
+        setErrorMessage("Authentication failed. Please check your username and password.");
+        return;
+      }
     }
 
     function handleUsernameChange(i:ChangeEvent<HTMLInputElement>){
