@@ -58,12 +58,20 @@ export default function Navigation() {
           {isLoading ? (
             <div className="text-sm text-gray-500">Loading...</div>
           ) : isAuthenticated ? (
-            <Link
-              href="/profile"
-              className="text-sm px-4 py-2 rounded-full bg-brand text-white hover:bg-brand-dark transition"
-            >
-              My Profile
-            </Link>
+            <>
+              <Link
+                href="/profile"
+                className="text-sm px-4 py-2 rounded-full bg-brand text-white hover:bg-brand-dark transition"
+              >
+                My Profile
+              </Link>
+              <Link
+                href="/appointments"
+                className="text-sm px-4 py-2 rounded-full bg-brand text-white hover:bg-brand-dark transition"
+              >
+                Appointments
+              </Link>
+            </>
           ) : (
             <>
               <Link

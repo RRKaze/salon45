@@ -8,6 +8,7 @@ import InputField from "../../components/InputField";
 import NormalButton from "../../components/NormalButton";
 import { userService } from "@/utils/api";
 import { authService } from "@/utils/api";
+import { AppointmentServiceProvider } from "@/utils/api/services/appointmentService";
 
 interface Appointment {
   id: string;
@@ -45,6 +46,9 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments);
+  const [cancelConfirmId, setCancelConfirmId] = useState<string | null>(null);
+  const [isCanceling, setIsCanceling] = useState(false);
   const [editData, setEditData] = useState<{
     firstName: string;
     lastName: string;
@@ -136,6 +140,35 @@ export default function ProfilePage() {
     setErrorMessage("");
   };
 
+  const handleCancelClick = (appointmentId: string) => {
+    setCancelConfirmId(appointmentId);
+  };
+
+  const handleCancelConfirm = async () => {
+    if (!cancelConfirmId) return;
+
+    setIsCanceling(true);
+    try {
+      await AppointmentServiceProvider.get().cancelAppointment(cancelConfirmId);
+      // Remove the appointment from the list
+      setAppointments(prev => prev.filter(apt => apt.id !== cancelConfirmId));
+      setCancelConfirmId(null);
+    } catch (error) {
+      console.error("Failed to cancel appointment:", error);
+      setErrorMessage("Failed to cancel appointment. Please try again.");
+    } finally {
+      setIsCanceling(false);
+    }
+  };
+
+  const handleCancelDecline = () => {
+    setCancelConfirmId(null);
+  };
+
+  const getAppointmentToCancel = () => {
+    return appointments.find(apt => apt.id === cancelConfirmId);
+  };
+
   if (isLoading) {
     return (
       <Background>
@@ -190,7 +223,7 @@ export default function ProfilePage() {
             </NormalButton>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-6">
             {/* Profile Section */}
             <div className="rounded-2xl border bg-white/70 backdrop-blur-sm p-6 shadow-sm">
               <div className="flex justify-between items-center mb-4">
@@ -282,39 +315,94 @@ export default function ProfilePage() {
 
             {/* Appointments Section */}
             <div className="rounded-2xl border bg-white/70 backdrop-blur-sm p-6 shadow-sm">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">My Appointments</h2>
-              {mockAppointments.length === 0 ? (
+              <h1 className="text-3xl font-semibold text-brand mb-6">My Appointments</h1>
+              {appointments.length === 0 ? (
                 <p className="text-gray-500">No appointments scheduled.</p>
               ) : (
-                <div className="space-y-4">
-                  {mockAppointments.map((appointment) => (
-                    <div
-                      key={appointment.id}
-                      className="border rounded-lg p-4 hover:bg-gray-50 transition"
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {formatDate(appointment.date)}
-                          </p>
-                          <p className="text-sm text-gray-600 mt-1">{appointment.time}</p>
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Appointment Information</h2>
+                  <div className="space-y-4">
+                    {appointments.map((appointment) => (
+                      <div
+                        key={appointment.id}
+                        className="border rounded-lg p-4 hover:bg-gray-50 transition"
+                      >
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <p className="font-medium text-gray-900">
+                              {formatDate(appointment.date)}
+                            </p>
+                            <p className="text-sm text-gray-600 mt-1">{appointment.time}</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                                appointment.status
+                              )}`}
+                            >
+                              {appointment.status.charAt(0).toUpperCase() +
+                                appointment.status.slice(1)}
+                            </span>
+                          {appointment.status !== "cancelled" && (
+                            <NormalButton
+                              onClick={() => handleCancelClick(appointment.id)}
+                              className="text-xs py-0.5 px-2 bg-red-500 text-white border-red-500 hover:bg-red-600"
+                            >
+                              Cancel
+                            </NormalButton>
+                          )}
+                          </div>
                         </div>
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                            appointment.status
-                          )}`}
-                        >
-                          {appointment.status.charAt(0).toUpperCase() +
-                            appointment.status.slice(1)}
-                        </span>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
           </div>
         </div>
+
+        {/* Cancel Confirmation Modal */}
+        {cancelConfirmId && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-xl">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Cancel Appointment
+              </h3>
+              {getAppointmentToCancel() && (
+                <div className="mb-6">
+                  <p className="text-gray-700 mb-2">
+                    Are you sure you want to cancel this appointment?
+                  </p>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <p className="font-medium text-gray-900">
+                      Date: {formatDate(getAppointmentToCancel()!.date)}
+                    </p>
+                    <p className="text-gray-600 mt-1">
+                      Time: {getAppointmentToCancel()!.time}
+                    </p>
+                  </div>
+                </div>
+              )}
+              <div className="flex gap-3">
+                <NormalButton
+                  onClick={handleCancelConfirm}
+                  disabled={isCanceling}
+                  className="flex-1 bg-red-500 text-white border-red-500 hover:bg-red-600"
+                >
+                  {isCanceling ? "Canceling..." : "Confirm Cancel"}
+                </NormalButton>
+                <NormalButton
+                  onClick={handleCancelDecline}
+                  disabled={isCanceling}
+                  className="flex-1"
+                >
+                  Keep Appointment
+                </NormalButton>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </Background>
   );
