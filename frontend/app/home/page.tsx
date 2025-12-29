@@ -80,14 +80,6 @@ export default function HomePage() {
               <p className="mt-4 text-lg text-gray-700 text-shadow-white-sm">
                 Modern nail care and spa experiences, crafted just for you.
               </p>
-              <div className="mt-8">
-                <Link
-                  href="/appointments"
-                  className="inline-flex items-center px-6 py-3 rounded-full bg-brand text-white font-medium hover:bg-brand-dark transition"
-                >
-                  Appointments
-                </Link>
-              </div>
             </div>
           </div>
         </section>
