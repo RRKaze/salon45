@@ -7,6 +7,7 @@ import passport from "passport";
 import userServices from "./users/UserServices.ts";
 import mongoDependencyInjection from "./mongo/DependencyInjection.ts";
 import authServices from "./auth/AuthServices.ts";
+import appointments from "./appointments/Appointments.ts";
 import { Session } from "./auth/configuration/Session.ts";
 
 dotenv.config();
@@ -32,8 +33,10 @@ mongoDependencyInjection.register(container);
 
 const userRoutes = userServices.register(container);
 const authRoutes = authServices.register(container);
+const appointmentRoutes = appointments.register(container);
 
 // Mount routes
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/appointments", appointmentRoutes);
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));

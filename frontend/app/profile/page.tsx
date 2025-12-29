@@ -8,36 +8,15 @@ import InputField from "../../components/InputField";
 import NormalButton from "../../components/NormalButton";
 import { userService } from "@/utils/api";
 import { authService } from "@/utils/api";
-import { AppointmentServiceProvider } from "@/utils/api/services/appointmentService";
+import { AppointmentServiceProvider, Appointment as ApiAppointment } from "@/utils/api/services/appointmentService";
+import { DateTime } from "luxon";
 
 interface Appointment {
   id: string;
   date: string;
   time: string;
-  status: "confirmed" | "pending" | "cancelled";
+  status: "confirmed" | "pending" | "cancelled" | "missed";
 }
-
-// Mock appointments data
-const mockAppointments: Appointment[] = [
-  {
-    id: "1",
-    date: "2024-01-15",
-    time: "10:00 AM",
-    status: "confirmed",
-  },
-  {
-    id: "2",
-    date: "2024-01-22",
-    time: "2:30 PM",
-    status: "pending",
-  },
-  {
-    id: "3",
-    date: "2024-02-01",
-    time: "11:00 AM",
-    status: "confirmed",
-  },
-];
 
 export default function ProfilePage() {
   const { user, isLoading, isAuthenticated, refetchUser, clearUser } = useAuth();
@@ -46,7 +25,8 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [appointmentsLoading, setAppointmentsLoading] = useState(true);
   const [cancelConfirmId, setCancelConfirmId] = useState<string | null>(null);
   const [isCanceling, setIsCanceling] = useState(false);
   const [editData, setEditData] = useState<{
@@ -78,6 +58,47 @@ export default function ProfilePage() {
       });
     }
   }, [user]);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      loadAppointments();
+    }
+  }, [isAuthenticated, user]);
+
+  const loadAppointments = async () => {
+    setAppointmentsLoading(true);
+    try {
+      const apiAppointments = await AppointmentServiceProvider.get().getAppointments(100);
+      // Convert API appointments to profile page format
+      const convertedAppointments: Appointment[] = apiAppointments.map(apt => {
+        const aptDate = DateTime.fromISO(apt.appointmentDateTime);
+        // Map API status to profile page status
+        let status: "confirmed" | "pending" | "cancelled" | "missed" = "pending";
+        if (apt.status === "canceled") {
+          status = "cancelled";
+        } else if (apt.status === "completed") {
+          status = "confirmed";
+        } else if (apt.status === "missed") {
+          status = "missed";
+        } else {
+          status = apt.status as "pending";
+        }
+        
+        return {
+          id: apt.id,
+          date: aptDate.toISODate() || "",
+          time: aptDate.toFormat("h:mm a"),
+          status,
+        };
+      });
+      setAppointments(convertedAppointments);
+    } catch (error) {
+      console.error("Failed to load appointments:", error);
+      setAppointments([]);
+    } finally {
+      setAppointmentsLoading(false);
+    }
+  };
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -150,8 +171,8 @@ export default function ProfilePage() {
     setIsCanceling(true);
     try {
       await AppointmentServiceProvider.get().cancelAppointment(cancelConfirmId);
-      // Remove the appointment from the list
-      setAppointments(prev => prev.filter(apt => apt.id !== cancelConfirmId));
+      // Reload appointments to get updated status
+      await loadAppointments();
       setCancelConfirmId(null);
     } catch (error) {
       console.error("Failed to cancel appointment:", error);
@@ -316,7 +337,12 @@ export default function ProfilePage() {
             {/* Appointments Section */}
             <div className="rounded-2xl border bg-white/70 backdrop-blur-sm p-6 shadow-sm">
               <h1 className="text-3xl font-semibold text-brand mb-6">My Appointments</h1>
-              {appointments.length === 0 ? (
+              {appointmentsLoading ? (
+                <div className="text-center py-8">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand"></div>
+                  <p className="mt-2 text-sm text-gray-600">Loading appointments...</p>
+                </div>
+              ) : appointments.length === 0 ? (
                 <p className="text-gray-500">No appointments scheduled.</p>
               ) : (
                 <div>
@@ -328,7 +354,7 @@ export default function ProfilePage() {
                         className="border rounded-lg p-4 hover:bg-gray-50 transition"
                       >
                         <div className="flex justify-between items-start mb-2">
-                          <div>
+        <div>
                             <p className="font-medium text-gray-900">
                               {formatDate(appointment.date)}
                             </p>

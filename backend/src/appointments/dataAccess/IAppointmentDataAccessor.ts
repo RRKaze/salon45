@@ -1,4 +1,4 @@
-import type { InferIdType } from "mongodb";
+import type { InferIdType, Collection } from "mongodb";
 import type { Appointment } from "../models/Appointment";
 
 export interface IAppointmentDataAccessor {
@@ -12,4 +12,6 @@ export interface IAppointmentDataAccessor {
     maxCount: number,
     userId?: string,
   ): Promise<Appointment[]>;
+
+  getAppointmentCollection(): Promise<Collection<Appointment>>;
 }

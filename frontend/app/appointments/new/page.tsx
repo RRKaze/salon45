@@ -1,12 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Navigation from "../../../components/Navigation";
 import Background from "../../../components/Background";
 import SubmitButton from "../../../components/SubmitButton";
 import { formatDate, toDisplayTime } from "@/utils/scheduleUtils";
 import { DateTime } from "luxon";
 import NormalButton from "@/components/NormalButton";
-import { DayAvailability, TimeRange, AppointmentServiceProvider } from "@/utils/api";
+import { DayAvailability, TimeRange, AppointmentServiceProvider, Appointment } from "@/utils/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface SelectedSlot {
   date: string;
@@ -14,32 +16,86 @@ interface SelectedSlot {
 }
 
 export default function NewAppointmentPage() {
+  const router = useRouter();
+  const { user, isAuthenticated } = useAuth();
   const [availableDays, setAvailableDays] = useState<DayAvailability[]>([]);
+  const [existingAppointments, setExistingAppointments] = useState<Appointment[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<SelectedSlot | null>(null);
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
   const [bookingInProgress, setBookingInProgress] = useState(false);
   const [canLoadMore, setCanLoadMore] = useState(true);
 
-  // Load initial days on component mount
+  // Load initial days and existing appointments on component mount
   useEffect(() => {
-    loadDays(0);
-  }, []);
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
+    const initialize = async () => {
+      await loadExistingAppointments();
+      await loadDays(0);
+    };
+    initialize();
+  }, [isAuthenticated, router]);
 
   /**
-   * Load available days from the backend
+   * Load existing appointments to filter out taken slots
+   */
+  const loadExistingAppointments = async () => {
+    try {
+      // Load a large number of appointments to check all available slots
+      const appointments = await AppointmentServiceProvider.get().getAppointments(1000);
+      setExistingAppointments(appointments);
+    } catch (error) {
+      console.error("Failed to load existing appointments:", error);
+    }
+  };
+
+  /**
+   * Check if a time slot is already taken
+   */
+  const isSlotTaken = (date: string, timeRange: TimeRange): boolean => {
+    return existingAppointments.some(apt => {
+      const aptDate = DateTime.fromISO(apt.appointmentDateTime);
+      const slotDate = DateTime.fromISO(date);
+      
+      // Check if same date
+      if (aptDate.toISODate() !== slotDate.toISODate()) {
+        return false;
+      }
+
+      // Check if time overlaps
+      const aptStart = aptDate.toFormat("HH:mm");
+      const slotStart = timeRange.start;
+      const slotEnd = timeRange.end;
+
+      // Check if appointment time overlaps with slot time
+      return aptStart >= slotStart && aptStart < slotEnd;
+    });
+  };
+
+  /**
+   * Load available days from the backend and filter out taken slots
    * @param offset Offset for pagination
    */
   const loadDays = async (offset: number) => {
     setLoading(true);
     try {
       const response = await AppointmentServiceProvider.get().getAvailability(offset, 5);
+      
+      // Filter out taken slots using current existing appointments
+      const filteredDays = response.availableDays.map(day => ({
+        ...day,
+        timeRanges: day.timeRanges.filter(timeRange => !isSlotTaken(day.date, timeRange))
+      }));
+
       if (offset === 0) {
         // Initial load: replace all days
-        setAvailableDays(response.availableDays);
+        setAvailableDays(filteredDays);
       } else {
         // Pagination: append new days
-        setAvailableDays(prev => [...prev, ...response.availableDays]);
+        setAvailableDays(prev => [...prev, ...filteredDays]);
       }
       setCanLoadMore(response.more);
     } catch (error) {
@@ -68,29 +124,35 @@ export default function NewAppointmentPage() {
 
   /**
    * Book the selected appointment
-   * TODO: Implement actual booking API call
-   * Expected endpoint: POST /api/appointments with { date, startTime, endTime }
+   * Sends appointment date, time, user id, and status as "pending"
    */
   const handleBookAppointment = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     
-    if (!selectedSlot) {
+    if (!selectedSlot || !user) {
       return;
     }
 
     setBookingInProgress(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await AppointmentServiceProvider.get().bookAppointment(
+        selectedSlot.date,
+        selectedSlot.timeRange.start
+      );
       
-      // TODO: Replace with actual API call
-      // await appointmentService.bookAppointment(selectedSlot.date, selectedSlot.timeRange.start);
+      // Reload appointments to update the list
+      await loadExistingAppointments();
+      
+      // Reload available days to remove the booked slot (reset to offset 0)
+      setOffset(0);
+      await loadDays(0);
       
       alert(`✓ Appointment booked!\n\nDate: ${formatDate(selectedSlot.date)}\nTime: ${selectedSlot.timeRange.start} - ${selectedSlot.timeRange.end}`);
       
-      // TODO: Redirect to confirmation page or appointments list
-      // router.push('/appointments');
+      // Clear selection and redirect to appointments page
+      setSelectedSlot(null);
+      router.push('/appointments');
       
     } catch (error) {
       console.error("Failed to book appointment:", error);

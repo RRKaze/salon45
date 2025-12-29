@@ -1,4 +1,4 @@
-import { AppointmentStatus } from "./AppointmentStatus";
+import { AppointmentStatus } from "./AppointmentStatus.ts";
 
 export class Appointment {
   _id: string;
@@ -22,6 +22,14 @@ export class Appointment {
     this.createdAt = new Date();
     this.updatedAt = null;
     this.status = AppointmentStatus.Requested;
+  }
+
+  public static NewAppointment(
+    userId: string,
+    startTime: Date,
+    endTime: Date,
+  ): Appointment {
+    return new Appointment(null!, userId, startTime, endTime);
   }
 
   public updateStatus(newStatus: AppointmentStatus): void {

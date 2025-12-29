@@ -40,7 +40,7 @@ export class AppointmentDataAccessor implements IAppointmentDataAccessor {
     return await collection.find(filter).batchSize(maxCount).toArray();
   }
 
-  private getAppointmentCollection(): Promise<Collection<Appointment>> {
+  public getAppointmentCollection(): Promise<Collection<Appointment>> {
     return this.mongoManager.getCollection<Appointment>("appointment");
   }
 }

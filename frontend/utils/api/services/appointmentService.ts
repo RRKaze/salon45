@@ -46,7 +46,7 @@ interface IAppointmentService {
 
 export class AppointmentServiceProvider {
     static get(): IAppointmentService {
-        return new FakeAppointmentService();
+        return new AppointmentService();
     }
 }
 
