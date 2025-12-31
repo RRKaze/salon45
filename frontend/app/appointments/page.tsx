@@ -156,12 +156,12 @@ export default function AppointmentPage() {
                                                 </div>
                                                 <div className="space-y-1 text-gray-700">
                                                     <p>
-                                                        <span className="font-medium">Time:</span>{" "}
-                                                        {appointmentDate.toLocaleString(DateTime.TIME_SIMPLE)}
+                                                        <span className="font-medium">Appointment Time:</span>{" "}
+                                                        {appointmentDate.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
                                                     </p>
                                                     <p>
-                                                        <span className="font-medium">Booked on:</span>{" "}
-                                                        {bookedDate.toLocaleString(DateTime.DATETIME_MED)}
+                                                        <span className="font-medium">Submitted on:</span>{" "}
+                                                        {bookedDate.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
                                                     </p>
                                                     <p className="text-sm text-gray-500">
                                                         <span className="font-medium">ID:</span> {appointment.id}
