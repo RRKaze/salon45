@@ -1,0 +1,62 @@
+version: '3'
+services:
+  mongo:
+    image: mongo:8
+    ports:
+      - 27017:27017
+    networks:
+      - salon-network
+    volumes:
+      - ~/.mongo-salon:/data/db
+
+  server:
+    build: 
+      context: backend
+      dockerfile: Dockerfile.dev
+    command: npm run docker-dev
+    restart: always
+    environment:
+      MongoConnectionString: mongodb://mongo:27017/salon
+    ports:
+      - 3001:3000
+      - 9229:9229
+    networks:
+      - salon-network
+    depends_on:
+      - mongo
+    develop:
+      watch:
+        - action: sync
+          path: backend
+          target: /app
+          ignore:
+            - node_modules
+        - action: rebuild
+          path: backend/package.json
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile.dev
+    restart: always
+    ports:
+      - 4000:3000
+      - 9228:9229
+    networks:
+      - salon-network
+    depends_on:
+      - mongo
+      - server
+    develop:
+      watch:
+        - action: sync
+          path: frontend
+          target: /app
+          ignore:
+            - node_modules
+        - action: rebuild
+          path: frontend/package.json
+
+networks:
+  salon-network:
+    driver: bridge

@@ -1,28 +1,42 @@
-import express, { type Application, type Request, type Response } from "express";
+import "reflect-metadata";
+import express, { type Application } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-// import userRoutes from "./routes/userRoutes";
-import userRoutes from "./routes/userRoutes.js";
-
-
+import { container } from "tsyringe";
+import passport from "passport";
+import userServices from "./users/UserServices.ts";
+import mongoDependencyInjection from "./mongo/DependencyInjection.ts";
+import authServices from "./auth/AuthServices.ts";
+import appointments from "./appointments/Appointments.ts";
+import { Session } from "./auth/configuration/Session.ts";
 
 dotenv.config();
 
 const app: Application = express();
-const PORT = process.env['PORT'] || 3000;
+const PORT = process.env["PORT"] || 3000;
 
 // Middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env["FRONTEND_URL"] || "http://localhost:4000",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 app.use(express.json());
+app.use(Session.SessionHandler());
+app.use(passport.authenticate("session"));
+app.use(Session.MessagesHandler());
 
-// Example route
-app.get("/", (_req: Request, res: Response) => {
-  res.send("Hello from TypeScript backend!");
-});
+mongoDependencyInjection.register(container);
 
+const userRoutes = userServices.register(container);
+const authRoutes = authServices.register(container);
+const appointmentRoutes = appointments.register(container);
+
+// Mount routes
 app.use("/api/users", userRoutes);
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-});
+app.use("/api/auth", authRoutes);
+app.use("/api/appointments", appointmentRoutes);
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
