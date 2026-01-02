@@ -130,22 +130,97 @@ export class AppointmentController {
         1000,
       );
 
+      /**
+       * Converts a UTC Date to EST/EDT time and returns hours and minutes as a string (HH:mm)
+       */
+      const utcToEstTime = (utcDate: Date): string => {
+        // Get UTC time components
+        const utcHours = utcDate.getUTCHours();
+        const utcMinutes = utcDate.getUTCMinutes();
+        const utcYear = utcDate.getUTCFullYear();
+        const utcMonth = utcDate.getUTCMonth();
+        const utcDay = utcDate.getUTCDate();
+
+        // Determine if the date is in DST (EDT) or not (EST)
+        // DST in US: Second Sunday in March to First Sunday in November
+        const isDST = isDateInDST(utcYear, utcMonth, utcDay);
+        const offsetHours = isDST ? 4 : 5; // EDT is UTC-4, EST is UTC-5
+
+        // Convert UTC to EST/EDT
+        // EST is UTC-5, so 7:00 PM UTC = 2:00 PM EST (subtract 5 hours)
+        // EDT is UTC-4, so 6:00 PM UTC = 2:00 PM EDT (subtract 4 hours)
+        let estHours = utcHours - offsetHours;
+        let estMinutes = utcMinutes;
+
+        // Handle day rollover
+        if (estHours >= 24) {
+          estHours -= 24;
+        } else if (estHours < 0) {
+          estHours += 24;
+        }
+
+        return `${String(estHours).padStart(2, "0")}:${String(estMinutes).padStart(2, "0")}`;
+      };
+
+      /**
+       * Determines if a date is in Daylight Saving Time (EDT) or Standard Time (EST)
+       */
+      const isDateInDST = (
+        year: number,
+        month: number,
+        day: number,
+      ): boolean => {
+        // DST starts: Second Sunday in March
+        const marchFirst = new Date(Date.UTC(year, 2, 1)); // March is month 2 (0-indexed)
+        const marchFirstDay = marchFirst.getUTCDay(); // 0 = Sunday
+        const daysToSecondSunday = ((7 - marchFirstDay) % 7) + 7; // Days to second Sunday
+        const dstStart = new Date(Date.UTC(year, 2, 1 + daysToSecondSunday));
+
+        // DST ends: First Sunday in November
+        const novemberFirst = new Date(Date.UTC(year, 10, 1)); // November is month 10
+        const novemberFirstDay = novemberFirst.getUTCDay();
+        const daysToFirstSunday = (7 - novemberFirstDay) % 7;
+        const dstEnd = new Date(Date.UTC(year, 10, 1 + daysToFirstSunday));
+
+        const checkDate = new Date(Date.UTC(year, month, day));
+
+        // DST is active if date is on or after DST start and before DST end
+        return checkDate >= dstStart && checkDate < dstEnd;
+      };
+
       // Filter out taken slots
       const filteredDays = availableDays.map((day) => {
+        // Parse the day date to compare with appointment dates
+        const dateParts = day.date.split("-").map(Number);
+        if (dateParts.length !== 3) {
+          return day; // Skip if invalid date format
+        }
+        const year = dateParts[0];
+        const month = dateParts[1];
+        const dayNum = dateParts[2];
+
+        if (year === undefined || month === undefined || dayNum === undefined) {
+          return day; // Skip if invalid
+        }
+
+        const dayStartUTC = new Date(
+          Date.UTC(year, month - 1, dayNum, 0, 0, 0, 0),
+        );
+        const dayEndUTC = new Date(
+          Date.UTC(year, month - 1, dayNum, 23, 59, 59, 999),
+        );
+
+        // Filter appointments for this day (compare UTC dates)
         const dayAppointments = existingAppointments.filter((apt) => {
           const aptDate = new Date(apt.startTime);
-          aptDate.setHours(0, 0, 0, 0);
-          const dayDate = new Date(day.date);
-          dayDate.setHours(0, 0, 0, 0);
-          return aptDate.getTime() === dayDate.getTime();
+          return aptDate >= dayStartUTC && aptDate <= dayEndUTC;
         });
 
+        // Convert appointment times to EST and create a set of taken slots
         const takenSlots = new Set<string>();
         dayAppointments.forEach((apt) => {
-          const aptHour = apt.startTime.getHours();
-          const aptMinute = apt.startTime.getMinutes();
-          const slotKey = `${String(aptHour).padStart(2, "0")}:${String(aptMinute).padStart(2, "0")}`;
-          takenSlots.add(slotKey);
+          const estTime = utcToEstTime(new Date(apt.startTime));
+          takenSlots.add(estTime);
         });
 
         return {

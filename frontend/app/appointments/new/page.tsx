@@ -54,18 +54,21 @@ export default function NewAppointmentPage() {
 
   /**
    * Check if a time slot is already taken
+   * All comparisons are done in EST timezone
    */
   const isSlotTaken = (date: string, timeRange: TimeRange): boolean => {
     return existingAppointments.some(apt => {
-      const aptDate = DateTime.fromISO(apt.appointmentDateTime);
-      const slotDate = DateTime.fromISO(date);
+      // Parse appointment datetime in EST timezone
+      const aptDate = DateTime.fromISO(apt.appointmentDateTime, { zone: "America/New_York" });
+      // Parse slot date in EST timezone
+      const slotDate = DateTime.fromISO(date, { zone: "America/New_York" });
       
-      // Check if same date
+      // Check if same date (in EST)
       if (aptDate.toISODate() !== slotDate.toISODate()) {
         return false;
       }
 
-      // Check if time overlaps
+      // Check if time overlaps (times are already in EST format HH:mm)
       const aptStart = aptDate.toFormat("HH:mm");
       const slotStart = timeRange.start;
       const slotEnd = timeRange.end;
@@ -184,7 +187,10 @@ export default function NewAppointmentPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-6">
                   {/* Left: Date */}
                   <div className="flex flex-col">
-                    <h2 className="text-xl font-bold text-gray-600">{formatDate(day.date, DateTime.DATE_MED_WITH_WEEKDAY)}</h2>
+                    <h2 className="text-xl font-bold text-gray-600">
+                      {formatDate(day.date, DateTime.DATE_MED_WITH_WEEKDAY)}
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">EST/EDT</p>
                   </div>
 
                   {/* Right: Time ranges */}
@@ -244,7 +250,7 @@ export default function NewAppointmentPage() {
                 <h3 className="text-lg font-semibold text-gray-600 mb-3">Appointment Summary</h3>
                 <div className="text-sm text-gray-700 space-y-1 mb-4">
                   <p><strong>Date:</strong> {formatDate(selectedSlot.date, DateTime.DATE_MED_WITH_WEEKDAY)}</p>
-                  <p><strong>Time:</strong> {selectedSlot.timeRange.start} - {selectedSlot.timeRange.end}</p>
+                  <p><strong>Time:</strong> {selectedSlot.timeRange.start} - {selectedSlot.timeRange.end} (EST/EDT)</p>
                 </div>
                 
                 <div className="flex gap-3">

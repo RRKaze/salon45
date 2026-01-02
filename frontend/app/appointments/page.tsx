@@ -6,7 +6,7 @@ import Background from "../../components/Background";
 import SubmitButton from "../../components/SubmitButton";
 import NormalButton from "../../components/NormalButton";
 import { AppointmentServiceProvider, Appointment } from "@/utils/api/services/appointmentService";
-import { formatDate } from "@/utils/scheduleUtils";
+import { formatDate, formatDateTime } from "@/utils/scheduleUtils";
 import { DateTime } from "luxon";
 
 const PAGE_SIZE = 10;
@@ -136,9 +136,6 @@ export default function AppointmentPage() {
                     {!loading && appointments.length > 0 && (
                         <div className="space-y-4">
                             {appointments.map((appointment) => {
-                                const appointmentDate = DateTime.fromISO(appointment.appointmentDateTime);
-                                const bookedDate = DateTime.fromISO(appointment.bookedDateTime);
-
                                 return (
                                     <div
                                         key={appointment.id}
@@ -157,11 +154,11 @@ export default function AppointmentPage() {
                                                 <div className="space-y-1 text-gray-700">
                                                     <p>
                                                         <span className="font-medium">Appointment Time:</span>{" "}
-                                                        {appointmentDate.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
+                                                        {formatDateTime(appointment.appointmentDateTime, DateTime.DATETIME_MED_WITH_WEEKDAY)} (EST/EDT)
                                                     </p>
                                                     <p>
                                                         <span className="font-medium">Submitted on:</span>{" "}
-                                                        {bookedDate.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
+                                                        {formatDateTime(appointment.bookedDateTime, DateTime.DATETIME_MED_WITH_WEEKDAY)} (EST/EDT)
                                                     </p>
                                                     <p className="text-sm text-gray-500">
                                                         <span className="font-medium">ID:</span> {appointment.id}
